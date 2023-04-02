@@ -7,7 +7,6 @@ const Statistics = (props) => {
 
   return (
     <>
-      <h1>statistics</h1>
       <p>good {props.good}</p>
       <p>neutral {props.neutral}</p>
       <p>bad {props.bad}</p>
@@ -31,7 +30,9 @@ const App = () => {
       <button onClick={() => setNeutral(neutral + 1)}>neutral</button>
       <button onClick={() => setBad(bad + 1)}>bad</button>
 
-      <Statistics good={good} neutral={neutral} bad={bad}/>
+      <h1>statistics</h1>
+      {(good + neutral + bad) === 0 && (<p>No feedback given</p>)}
+      {(good + neutral + bad) !== 0 && (<Statistics good={good} neutral={neutral} bad={bad}/>)}
     </div>
   );
 };
