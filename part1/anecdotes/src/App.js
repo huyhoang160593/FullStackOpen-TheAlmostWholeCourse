@@ -14,11 +14,26 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
   const [anecdotesVotes, setAnecdotesVote] = useState(Array(anecdotes.length).fill(0))
+  const [maxVoteAnecdotesIndex, setMaxVoteAnecdotesIndex] = useState(0)
+
+  const findMaxVoteIndex = (voteArray) => {
+    let maxIndex = 0
+    let maxValue = voteArray[maxIndex]
+    for (let index = 0; index < voteArray.length; index++) {
+      if (voteArray[index] > maxValue) {
+        maxIndex = index
+        maxValue = voteArray[index]
+      }
+    }
+    return maxIndex
+  }
 
   const onVoteClickHandle = () => {
     const cloneArray = [...anecdotesVotes]
     cloneArray[selected] += 1;
+
     setAnecdotesVote(cloneArray)
+    setMaxVoteAnecdotesIndex(findMaxVoteIndex(cloneArray))
   }
   const onNextClickHandle = () => {
     const randomNumber = Math.floor(Math.random() * anecdotes.length)
@@ -27,10 +42,15 @@ const App = () => {
 
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <div>{anecdotes[selected]}</div>
       <div>has {anecdotesVotes[selected]} votes</div>
       <button onClick={onVoteClickHandle}>vote</button>
       <button onClick={onNextClickHandle}>next anecdotes</button>
+
+      <h1>Anecdote with most votes</h1>
+      <div>{anecdotes[maxVoteAnecdotesIndex]}</div>
+      <div>with {anecdotesVotes[maxVoteAnecdotesIndex]}</div>
     </div>
   );
 };
