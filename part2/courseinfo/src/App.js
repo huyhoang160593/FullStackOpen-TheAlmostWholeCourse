@@ -11,19 +11,13 @@ const Part = ({ name, exercises }) => {
 };
 
 const Content = ({ parts }) => {
-  const totalExercise = (parts) => {
-    let exercises = 0
-    for (let index = 0; index < parts.length; index++) {
-      exercises += parts[index].exercises
-    }
-    return exercises
-  }
+  const totalExercise = parts.reduce((accumulate, current) => accumulate + current.exercises, 0)
   return (
     <>
       {parts.map((part) => (
         <Part key={part.id} name={part.name} exercises={part.exercises} />
       ))}
-      <h4>total of {totalExercise(parts)} exercises</h4>
+      <h4>total of {totalExercise} exercises</h4>
     </>
   );
 };
