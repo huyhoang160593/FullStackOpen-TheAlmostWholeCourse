@@ -11,11 +11,19 @@ const Part = ({ name, exercises }) => {
 };
 
 const Content = ({ parts }) => {
+  const totalExercise = (parts) => {
+    let exercises = 0
+    for (let index = 0; index < parts.length; index++) {
+      exercises += parts[index].exercises
+    }
+    return exercises
+  }
   return (
     <>
       {parts.map((part) => (
         <Part key={part.id} name={part.name} exercises={part.exercises} />
       ))}
+      <h4>total of {totalExercise(parts)} exercises</h4>
     </>
   );
 };
@@ -48,6 +56,11 @@ const App = () => {
         name: "State of a component",
         exercises: 14,
         id: 3,
+      },
+      {
+        name: "Redux",
+        exercises: 11,
+        id: 4,
       },
     ],
   };
