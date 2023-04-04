@@ -36,7 +36,23 @@ const App = () => {
       (person) => person.name === newName
     );
     if (existedNameIndex > -1) {
-      alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${persons[existedNameIndex].name} is already added to phonebook, replace the old number with a new one?`
+        )
+      ) {
+        phonebookServices
+          .updateItem(persons[existedNameIndex].id, {
+            number: newPhoneNumber,
+          })
+          .then((result) => {
+            setPersons(
+              persons.map((person) =>
+                person.id === result.data.id ? result.data : person
+              )
+            );
+          });
+      }
       return;
     }
     phonebookServices
@@ -52,12 +68,17 @@ const App = () => {
   };
 
   const customDeleteClickHandle = (person) => {
-    if(window.confirm(`Delete ${person.name} ?`))
-    phonebookServices.deleteItem(person.id).then(() => {
-      setPersons(persons.filter(currentPerson => currentPerson.id !== person.id))
-    }).catch(() => {
-      alert(`Error when tried to delete phonebook name ${person.name}`)
-    })
+    if (window.confirm(`Delete ${person.name} ?`))
+      phonebookServices
+        .deleteItem(person.id)
+        .then(() => {
+          setPersons(
+            persons.filter((currentPerson) => currentPerson.id !== person.id)
+          );
+        })
+        .catch(() => {
+          alert(`Error when tried to delete phonebook name ${person.name}`);
+        });
   };
 
   useEffect(() => {

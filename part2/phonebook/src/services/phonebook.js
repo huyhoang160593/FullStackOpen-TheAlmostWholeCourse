@@ -18,10 +18,15 @@ function deleteItem(id) {
   return axios.delete(`${baseUrl}/${id}`)
 }
 
+function updateItem(id, updatePhoneBook) {
+  return axios.patch(`${baseUrl}/${id}`, updatePhoneBook)
+}
+
 const phonebookServices = {
   addNewPhoneNumber,
   getAll,
-  deleteItem
+  deleteItem,
+  updateItem
 }
 
 export default phonebookServices
