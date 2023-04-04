@@ -1,4 +1,7 @@
 import { useState } from "react";
+import Persons from "./components/Persons";
+import PersonForm from "./components/PersonForm";
+import Filter from "./components/Filter";
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -12,9 +15,9 @@ const App = () => {
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
 
   const filterPersons = persons.filter((person) => {
-    if(!filter) return person
-    return person.name.includes(filter)
-  })
+    if (!filter) return person;
+    return person.name.includes(filter);
+  });
 
   const onNameChangeHandle = (event) => {
     event.preventDefault();
@@ -47,29 +50,17 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        filter shown with{" "}
-        <input onChange={onFilterChangeHandle} value={filter} />
-      </div>
+      <Filter filter={filter} onFilterChangeHandle={onFilterChangeHandle} />
       <h2>Add a new</h2>
-      <form onSubmit={onNameSubmitHandle}>
-        <div>
-          name: <input onChange={onNameChangeHandle} value={newName} />
-        </div>
-        <div>
-          number:
-          <input onChange={onPhoneNumberChangeHandle} value={newPhoneNumber} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm
+        onNameSubmitHandle={onNameSubmitHandle}
+        onNameChangeHandle={onNameChangeHandle}
+        newName={newName}
+        onPhoneNumberChangeHandle={onPhoneNumberChangeHandle}
+        newPhoneNumber={newPhoneNumber}
+      />
       <h2>Numbers</h2>
-      {filterPersons.map((person) => (
-        <p key={person.name}>
-          {person.name} {person.number}
-        </p>
-      ))}
+      <Persons filterPersons={filterPersons} />
     </div>
   );
 };
