@@ -51,6 +51,15 @@ const App = () => {
       });
   };
 
+  const customDeleteClickHandle = (person) => {
+    if(window.confirm(`Delete ${person.name} ?`))
+    phonebookServices.deleteItem(person.id).then(() => {
+      setPersons(persons.filter(currentPerson => currentPerson.id !== person.id))
+    }).catch(() => {
+      alert(`Error when tried to delete phonebook name ${person.name}`)
+    })
+  };
+
   useEffect(() => {
     phonebookServices.getAll().then((result) => {
       setPersons(result.data);
@@ -70,7 +79,10 @@ const App = () => {
         newPhoneNumber={newPhoneNumber}
       />
       <h2>Numbers</h2>
-      <Persons filterPersons={filterPersons} />
+      <Persons
+        filterPersons={filterPersons}
+        customDeleteClickHandle={customDeleteClickHandle}
+      />
     </div>
   );
 };
