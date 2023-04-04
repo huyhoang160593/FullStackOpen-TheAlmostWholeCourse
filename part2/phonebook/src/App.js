@@ -5,8 +5,7 @@ import Filter from "./components/Filter";
 import axios from "axios";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-  ]);
+  const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("");
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
@@ -31,7 +30,7 @@ const App = () => {
     setNewPhoneNumber(event.target.value);
   };
 
-  const onNameSubmitHandle = (event) => {
+  const onPhoneFormSubmitHandle = (event) => {
     event.preventDefault();
     const existedNameIndex = persons.findIndex(
       (person) => person.name === newName
@@ -40,16 +39,26 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
       return;
     }
-    setPersons([...persons, { name: newName, number: newPhoneNumber }]);
-    setNewName("");
-    setNewPhoneNumber("");
+    axios
+      .post("http://localhost:3001/persons", {
+        name: newName,
+        number: newPhoneNumber,
+      })
+      .then((result) => {
+        console.log(result.data);
+        setPersons([...persons, result.data ]);
+        setNewName("");
+        setNewPhoneNumber("");
+      }).catch(err => {
+        alert('Error when tried to add new phone book')
+      });
   };
 
-  useEffect(()=> {
-    axios.get('http://localhost:3001/persons').then((result) => {
-      setPersons(result.data)
-    })
-  }, [])
+  useEffect(() => {
+    axios.get("http://localhost:3001/persons").then((result) => {
+      setPersons(result.data);
+    });
+  }, []);
 
   return (
     <div>
@@ -57,7 +66,7 @@ const App = () => {
       <Filter filter={filter} onFilterChangeHandle={onFilterChangeHandle} />
       <h2>Add a new</h2>
       <PersonForm
-        onNameSubmitHandle={onNameSubmitHandle}
+        onPhoneFormSubmitHandle={onPhoneFormSubmitHandle}
         onNameChangeHandle={onNameChangeHandle}
         newName={newName}
         onPhoneNumberChangeHandle={onPhoneNumberChangeHandle}
