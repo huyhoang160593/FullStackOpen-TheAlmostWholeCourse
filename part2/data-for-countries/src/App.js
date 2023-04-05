@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import CountriesAPI from "./services/countries";
+import DisplayCountry from "./services/DisplayCountry";
 
 function App() {
   const [filterCountriesInput, setFilterCountriesInput] = useState("");
@@ -24,32 +25,7 @@ function App() {
         find countries{" "}
         <input value={filterCountriesInput} onChange={onSetFilterHandle} />
       </div>
-      {countriesFilter.length > 10 && (
-        <div>Too many matches, specify another filter</div>
-      )}
-      {countriesFilter.length < 10 && countriesFilter.length > 1 && (
-        <div>
-          {countriesFilter.map((country) => (
-            <div key={country.name.common}>{country.name.common}</div>
-          ))}
-        </div>
-      )}
-      {countriesFilter.length === 1 && (
-        <div>
-          <h1>{countriesFilter[0].name.common}</h1>
-          <div>
-            <div>capital {countriesFilter[0].capital[0]}</div>
-            <div>area {countriesFilter[0].area}</div>
-          </div>
-          <h2>language:</h2>
-          <ul>
-            {Object.values(countriesFilter[0].languages).map((lang) => (
-              <li key={lang}>{lang}</li>
-            ))}
-          </ul>
-          <img src={countriesFilter[0].flags.png} alt={`${countriesFilter[0].name.common} flags`} />
-        </div>
-      )}
+      <DisplayCountry countries={countriesFilter} />
     </div>
   );
 }
