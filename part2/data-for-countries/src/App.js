@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CountriesAPI from "./services/countries";
-import DisplayCountry from "./services/DisplayCountry";
+import DisplayCountry from "./components/DisplayCountry";
 
 function App() {
   const [filterCountriesInput, setFilterCountriesInput] = useState("");

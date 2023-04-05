@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import OpenWeatherAPI from "../services/weather";
 
 export default function DisplayCountry({ countries }) {
   const [countriesShow, setCountriesShow] = useState([]);
@@ -25,10 +26,14 @@ export default function DisplayCountry({ countries }) {
                 <button
                   onClick={() => onCountryButtonHandle(country.name.common)}
                 >
-                  {countriesShow.includes(country.name.common) ? "hide" : "show"}
+                  {countriesShow.includes(country.name.common)
+                    ? "hide"
+                    : "show"}
                 </button>
               </div>
-              {countriesShow.includes(country.name.common) && (<CountryInfo country={country} />)}
+              {countriesShow.includes(country.name.common) && (
+                <CountryInfo country={country} />
+              )}
             </div>
           ))}
         </div>
@@ -39,6 +44,18 @@ export default function DisplayCountry({ countries }) {
 }
 
 const CountryInfo = ({ country }) => {
+  const [weatherInfo, setWeatherInfo] = useState(null);
+  useEffect(() => {
+    OpenWeatherAPI.getGeocodingFromCityName(country.capital[0]).then((data) => {
+      const latLng = {
+        lat: data[0].lat,
+        lon: data[0].lon,
+      };
+      OpenWeatherAPI.getWeatherFromLatLng(latLng).then((weatherData) => {
+        setWeatherInfo(weatherData);
+      });
+    });
+  }, [country.capital]);
   return (
     <div>
       <h1>{country.name.common}</h1>
@@ -53,6 +70,18 @@ const CountryInfo = ({ country }) => {
         ))}
       </ul>
       <img src={country.flags.png} alt={`${country.name.common} flags`} />
+      <h2>Weather in {country.capital[0]}</h2>
+      {!weatherInfo && <div>loading...</div>}
+      {weatherInfo && (
+        <>
+          <div>temperature {weatherInfo.main.temp}&deg;C</div>
+          <img
+            src={`https://openweathermap.org/img/wn/${weatherInfo.weather[0].icon}@4x.png`}
+            alt={`${country.capital[0]} with ${weatherInfo.weather[0].description}`}
+          />
+          <div>wind {weatherInfo.wind.speed} m/s</div>
+        </>
+      )}
     </div>
   );
 };
