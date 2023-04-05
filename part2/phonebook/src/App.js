@@ -2,13 +2,22 @@ import { useEffect, useState } from "react";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
+import Notification, { SUCCESS } from "./components/Notification";
 import phonebookServices from "./services/phonebook";
+
+const defaultNotificationState = {
+  type: null,
+  message: null,
+};
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [filter, setFilter] = useState("");
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [notification, setNotification] = useState({
+    ...defaultNotificationState,
+  });
 
   const filterPersons = persons.filter((person) => {
     if (!filter) return person;
@@ -28,6 +37,18 @@ const App = () => {
   const onPhoneNumberChangeHandle = (event) => {
     event.preventDefault();
     setNewPhoneNumber(event.target.value);
+  };
+
+  const displayNotification = (message, type = SUCCESS, timeout = 3000) => {
+    setNotification({
+      message,
+      type,
+    });
+    setTimeout(() => {
+      setNotification({
+        ...defaultNotificationState,
+      });
+    }, timeout);
   };
 
   const onPhoneFormSubmitHandle = (event) => {
@@ -51,6 +72,9 @@ const App = () => {
                 person.id === result.data.id ? result.data : person
               )
             );
+            setNewName("");
+            setNewPhoneNumber("");
+            displayNotification(`Number of ${result.data.name} changed`);
           });
       }
       return;
@@ -61,6 +85,7 @@ const App = () => {
         setPersons([...persons, result.data]);
         setNewName("");
         setNewPhoneNumber("");
+        displayNotification(`Added ${result.data.name}`);
       })
       .catch((err) => {
         alert("Error when tried to add new phone book !");
@@ -90,6 +115,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notification.message} type={notification.type} />
       <Filter filter={filter} onFilterChangeHandle={onFilterChangeHandle} />
       <h2>Add a new</h2>
       <PersonForm
