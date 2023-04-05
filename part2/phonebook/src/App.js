@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Persons from "./components/Persons";
 import PersonForm from "./components/PersonForm";
 import Filter from "./components/Filter";
-import Notification, { SUCCESS } from "./components/Notification";
+import Notification, { ERROR, SUCCESS } from "./components/Notification";
 import phonebookServices from "./services/phonebook";
 
 const defaultNotificationState = {
@@ -102,7 +102,7 @@ const App = () => {
           );
         })
         .catch(() => {
-          alert(`Error when tried to delete phonebook name ${person.name}`);
+          displayNotification(`Information of ${person.name} has already been removed from server`, ERROR);
         });
   };
 
