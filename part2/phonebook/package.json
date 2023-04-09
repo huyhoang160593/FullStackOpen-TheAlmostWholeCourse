@@ -15,7 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "build:ui": "pnpm build && mv build ../../../FullStackOpen2023-Part3",
+    "build:ui": "pnpm build && rm -rf ../../../FullStackOpen2023-Part3/build && mv build ../../../FullStackOpen2023-Part3",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "json-server -p3001 --watch db.json"
