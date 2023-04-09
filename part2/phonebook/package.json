@@ -15,6 +15,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build:ui": "pnpm build && mv build ../../../FullStackOpen2023-Part3",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "server": "json-server -p3001 --watch db.json"
@@ -39,5 +40,6 @@
   },
   "devDependencies": {
     "json-server": "^0.17.3"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }
