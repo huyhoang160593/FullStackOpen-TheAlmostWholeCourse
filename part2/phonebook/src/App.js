@@ -75,6 +75,9 @@ const App = () => {
             setNewName("");
             setNewPhoneNumber("");
             displayNotification(`Number of ${result.data.name} changed`);
+          })
+          .catch((err) => {
+            displayNotification(err.response.data.error, ERROR);
           });
       }
       return;
@@ -88,7 +91,7 @@ const App = () => {
         displayNotification(`Added ${result.data.name}`);
       })
       .catch((err) => {
-        alert("Error when tried to add new phone book !");
+        displayNotification(err.response.data.error, ERROR);
       });
   };
 
@@ -102,7 +105,10 @@ const App = () => {
           );
         })
         .catch(() => {
-          displayNotification(`Information of ${person.name} has already been removed from server`, ERROR);
+          displayNotification(
+            `Information of ${person.name} has already been removed from server`,
+            ERROR
+          );
         });
   };
 
