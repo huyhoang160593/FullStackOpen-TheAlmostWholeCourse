@@ -19,7 +19,7 @@ function deleteItem(id) {
 }
 
 function updateItem(id, updatePhoneBook) {
-  return axios.patch(`${baseUrl}/${id}`, updatePhoneBook)
+  return axios.put(`${baseUrl}/${id}`, updatePhoneBook)
 }
 
 const phonebookServices = {
