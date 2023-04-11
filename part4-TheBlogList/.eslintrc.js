@@ -12,6 +12,12 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
+    'no-console': ['error', {
+      allow: ['info', 'error'],
+    }],
+    'prefer-destructuring': 'off',
+    'no-param-reassign': ['error', { props: false }],
+    'no-underscore-dangle': 'off',
   },
   ignorePatterns: ['/node_modules/*'],
 };
