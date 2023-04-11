@@ -1,0 +1,32 @@
+{
+  "name": "part4-thebloglist",
+  "version": "0.0.5",
+  "description": "The Bloglist Application serve the purpose to be an series of exercises to practice using NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node index.js",
+		"dev": "nodemon index.jx",
+		"lint": "eslint .",
+		"lint:fix": "eslint . --fix"
+  },
+  "keywords": [
+    "backend",
+    "nodejs"
+  ],
+  "author": "The 99's Puppycat",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.0.3",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.38.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "nodemon": "^2.0.22"
+  }
+}
