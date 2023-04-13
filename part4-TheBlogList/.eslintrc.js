@@ -4,6 +4,7 @@ module.exports = {
     commonjs: true,
     es2021: true,
     node: true,
+    jest: true,
   },
   extends: 'airbnb-base',
   overrides: [
@@ -12,6 +13,7 @@ module.exports = {
     ecmaVersion: 'latest',
   },
   rules: {
+    'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
     'no-console': ['error', {
       allow: ['info', 'error'],
     }],
