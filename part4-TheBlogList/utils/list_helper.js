@@ -26,9 +26,28 @@ const mostBlog = (blogs) => {
   return authorWithMostBlog;
 };
 
+const mostLikes = (blogs) => {
+  if (!blogs || blogs.length === 0) return null;
+  const countLikesPerAuthor = blogs.reduce((likesPerAuthor, blog) => {
+    if (!likesPerAuthor[blog.author]) {
+      likesPerAuthor[blog.author] = blog.likes;
+      return likesPerAuthor;
+    }
+    likesPerAuthor[blog.author] += blog.likes;
+    return likesPerAuthor;
+  }, {});
+  const mostLikesValue = Math.max(...Object.values(countLikesPerAuthor));
+  const authorWithMostLikes = Object.entries(countLikesPerAuthor).map((entry) => ({
+    author: entry[0],
+    likes: entry[1],
+  })).find((entry) => entry.likes === mostLikesValue);
+  return authorWithMostLikes;
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlog,
+  mostLikes,
 };
