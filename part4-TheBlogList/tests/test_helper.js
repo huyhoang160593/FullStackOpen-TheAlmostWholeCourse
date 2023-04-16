@@ -46,11 +46,18 @@ const newBlogObject = {
   likes: 5,
 };
 
+const nonExistBlogs = async () => {
+  const blogToBeDelete = new Blog(newBlogObject);
+  await blogToBeDelete.save();
+  await blogToBeDelete.deleteOne();
+  return blogToBeDelete._id.toString();
+};
+
 const blogsInDB = async () => {
   const blogs = await Blog.find({});
   return blogs.map((blog) => blog.toJSON());
 };
 
 module.exports = {
-  initialBlogs, newBlogObject, blogsInDB,
+  initialBlogs, newBlogObject, nonExistBlogs, blogsInDB,
 };
