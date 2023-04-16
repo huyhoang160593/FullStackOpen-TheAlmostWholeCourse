@@ -47,6 +47,31 @@ test('post new blog without likes property, default to be 0 successfully', async
   expect(result.body.likes).toEqual(0);
 });
 
+test('missing title will return Bad Request 400', async () => {
+  const newBlogObjectWithoutTitle = {
+    ...helper.newBlogObject,
+  };
+  delete newBlogObjectWithoutTitle.title;
+  await api.post('/api/blogs').send(newBlogObjectWithoutTitle).expect(400);
+});
+
+test('missing url will also return Bad Request 400', async () => {
+  const newBlogObjectWithoutURL = {
+    ...helper.newBlogObject,
+  };
+  delete newBlogObjectWithoutURL.url;
+  await api.post('/api/blogs').send(newBlogObjectWithoutURL).expect(400);
+});
+
+test('and finally missing both title and url will also return Bad Request 400', async () => {
+  const newBlogObjectWithoutTitleAndURL = {
+    ...helper.newBlogObject,
+  };
+  delete newBlogObjectWithoutTitleAndURL.url;
+  delete newBlogObjectWithoutTitleAndURL.title;
+  await api.post('/api/blogs').send(newBlogObjectWithoutTitleAndURL).expect(400);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });

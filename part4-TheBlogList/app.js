@@ -3,9 +3,12 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const logger = require('./utils/logger');
 const { MONGODB_URI } = require('./utils/config');
-const blogsRouter = require('./controllers/blogs');
 const { morganMiddleware, errorHandler, unknownEndpoint } = require('./utils/middleware');
+/* NOTES: make sure this below library will be import before any router require or else the
+ * error will not be pass
+ */
 require('express-async-errors');
+const blogsRouter = require('./controllers/blogs');
 
 const app = express();
 
