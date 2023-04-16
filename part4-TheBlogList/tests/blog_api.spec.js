@@ -16,8 +16,16 @@ beforeEach(async () => {
 });
 
 test('all blogs are return', async () => {
-  const response = await api.get('/api/blogs');
+  const response = await api
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/);
   expect(response.body).toHaveLength(helper.initialBlogs.length);
+});
+
+test('new blog have unique identifier property name id', () => {
+  const newBlogObject = new Blog(helper.newBlogObject);
+  expect(newBlogObject.id).toBeDefined();
 });
 
 afterAll(async () => {
