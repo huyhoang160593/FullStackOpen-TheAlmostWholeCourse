@@ -38,6 +38,15 @@ test('post new blog successful', async () => {
   expect(blogInDB.length).toEqual(helper.initialBlogs.length + 1);
 });
 
+test('post new blog without likes property, default to be 0 successfully', async () => {
+  const newBlogObjectWithoutLike = {
+    ...helper.newBlogObject,
+  };
+  delete newBlogObjectWithoutLike.likes;
+  const result = await api.post('/api/blogs').send(newBlogObjectWithoutLike).expect(201).expect('Content-Type', /application\/json/);
+  expect(result.body.likes).toEqual(0);
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
