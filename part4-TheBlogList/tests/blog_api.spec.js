@@ -106,6 +106,17 @@ describe('adding new blog', () => {
   });
 });
 
+describe('deletion of a blog', () => {
+  test('succeeds with status 204 if id is valid', async () => {
+    const blogAtStart = await helper.blogsInDB();
+    const blogToDelete = blogAtStart[0];
+    await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+
+    const blogAtEnd = await helper.blogsInDB();
+    expect(blogAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
 });
