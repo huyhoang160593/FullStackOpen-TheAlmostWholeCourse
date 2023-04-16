@@ -46,6 +46,13 @@ const newBlogObject = {
   likes: 5,
 };
 
+const dataToUpdate = {
+  title: 'This is the update title',
+  author: "The 99's Puppycat",
+  url: 'https://github.com/huyhoang160593',
+  likes: 5,
+};
+
 const nonExistBlogs = async () => {
   const blogToBeDelete = new Blog(newBlogObject);
   await blogToBeDelete.save();
@@ -59,5 +66,5 @@ const blogsInDB = async () => {
 };
 
 module.exports = {
-  initialBlogs, newBlogObject, nonExistBlogs, blogsInDB,
+  initialBlogs, newBlogObject, dataToUpdate, nonExistBlogs, blogsInDB,
 };
