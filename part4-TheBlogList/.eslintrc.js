@@ -20,6 +20,7 @@ module.exports = {
     'prefer-destructuring': 'off',
     'no-param-reassign': ['error', { props: false }],
     'no-underscore-dangle': 'off',
+    'import/no-extraneous-dependencies': ['error', { devDependencies: ['**/*.test.js', '**/*.spec.js'] }],
   },
   ignorePatterns: ['/node_modules/*'],
 };

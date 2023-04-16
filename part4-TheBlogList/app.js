@@ -5,6 +5,7 @@ const logger = require('./utils/logger');
 const { MONGODB_URI } = require('./utils/config');
 const blogsRouter = require('./controllers/blogs');
 const { morganMiddleware, errorHandler, unknownEndpoint } = require('./utils/middleware');
+require('express-async-errors');
 
 const app = express();
 
