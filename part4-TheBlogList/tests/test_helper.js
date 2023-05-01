@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
@@ -40,6 +41,12 @@ const initialBlogs = [
   },
 ];
 
+const initialUser = {
+  username: 'the99spuppycat',
+  password: '16051993',
+  name: 'The99sPuppycat',
+};
+
 const newBlogObject = {
   title: 'Go To Statement Considered Harmful',
   author: 'Edsger W. Dijkstra',
@@ -71,6 +78,30 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON());
 };
 
+const generateNewUserToken = async () => {
+  const user = new User({
+    username: initialUser.username,
+    name: initialUser.name,
+    passwordHash: 'thisthingiscompletelyuseless',
+  });
+  await user.save();
+  const userForToken = {
+    username: user.username,
+    id: user._id,
+  };
+  const token = jwt.sign(userForToken, process.env.SECRET);
+
+  return {
+    token,
+    username: user.username,
+    name: user.name,
+  };
+};
+
+const clearUserSchema = async () => {
+  await User.deleteMany();
+};
+
 module.exports = {
   initialBlogs,
   newBlogObject,
@@ -78,4 +109,6 @@ module.exports = {
   nonExistBlogs,
   blogsInDB,
   usersInDb,
+  generateNewUserToken,
+  clearUserSchema,
 };

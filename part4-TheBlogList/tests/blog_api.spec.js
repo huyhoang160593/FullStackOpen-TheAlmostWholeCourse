@@ -7,6 +7,13 @@ const api = supertest(app);
 
 const Blog = require('../models/blog');
 
+/** @type {{token: string, username: string, name: string}} */
+let userLoginInfo;
+
+beforeAll(async () => {
+  userLoginInfo = await helper.generateNewUserToken();
+});
+
 beforeEach(async () => {
   await Blog.deleteMany();
   await Blog.insertMany(helper.initialBlogs);
@@ -16,6 +23,7 @@ describe('when there is some blogs save', () => {
   test('all blogs are return', async () => {
     const response = await api
       .get('/api/blogs')
+      .set('Authorization', `Bearer ${userLoginInfo.token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/);
     expect(response.body).toHaveLength(helper.initialBlogs.length);
@@ -31,6 +39,7 @@ describe('when there is some blogs save', () => {
       await api
         .post('/api/blogs')
         .send(helper.newBlogObject)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
         .expect(201)
         .expect('Content-Type', /application\/json/);
       const blogAtEnd = await helper.blogsInDB();
@@ -55,6 +64,7 @@ describe('when there is some blogs save', () => {
         .post('/api/blogs')
         .send(newBlogObjectWithoutLike)
         .expect(201)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
         .expect('Content-Type', /application\/json/);
       expect(result.body.likes).toEqual(0);
       const blogAtEnd = await helper.blogsInDB();
@@ -70,12 +80,23 @@ describe('when there is some blogs save', () => {
       expect(blogs).toContainEqual({ ...helper.newBlogObject, likes: 0 });
     });
 
+    test('missing authentication will return 401 Unauthorized', async () => {
+      await api.post('/api/blogs').send(helper.newBlogObject).expect(401);
+
+      const blogAtEnd = await helper.blogsInDB();
+      expect(blogAtEnd).toHaveLength(helper.initialBlogs.length);
+    });
+
     test('missing title will return Bad Request 400', async () => {
       const newBlogObjectWithoutTitle = {
         ...helper.newBlogObject,
       };
       delete newBlogObjectWithoutTitle.title;
-      await api.post('/api/blogs').send(newBlogObjectWithoutTitle).expect(400);
+      await api
+        .post('/api/blogs')
+        .send(newBlogObjectWithoutTitle)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(400);
       const blogAtEnd = await helper.blogsInDB();
       expect(blogAtEnd).toHaveLength(helper.initialBlogs.length);
     });
@@ -85,7 +106,11 @@ describe('when there is some blogs save', () => {
         ...helper.newBlogObject,
       };
       delete newBlogObjectWithoutURL.url;
-      await api.post('/api/blogs').send(newBlogObjectWithoutURL).expect(400);
+      await api
+        .post('/api/blogs')
+        .send(newBlogObjectWithoutURL)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(400);
       const blogAtEnd = await helper.blogsInDB();
       expect(blogAtEnd).toHaveLength(helper.initialBlogs.length);
     });
@@ -99,6 +124,7 @@ describe('when there is some blogs save', () => {
       await api
         .post('/api/blogs')
         .send(newBlogObjectWithoutTitleAndURL)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
         .expect(400);
       const blogAtEnd = await helper.blogsInDB();
       expect(blogAtEnd).toHaveLength(helper.initialBlogs.length);
@@ -106,13 +132,23 @@ describe('when there is some blogs save', () => {
   });
 
   describe('deletion of a blog', () => {
-    test('succeeds with status 204 if id is valid', async () => {
-      const blogAtStart = await helper.blogsInDB();
-      const blogToDelete = blogAtStart[0];
-      await api.delete(`/api/blogs/${blogToDelete.id}`).expect(204);
+    test('succeeds with status 204 if id is valid and have the right user', async () => {
+      const result = await api
+        .post('/api/blogs')
+        .send(helper.newBlogObject)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(201)
+        .expect('Content-Type', /application\/json/);
+      const blogAfterAdd = await helper.blogsInDB();
+
+      expect(blogAfterAdd).toHaveLength(helper.initialBlogs.length + 1);
+      await api
+        .delete(`/api/blogs/${result.body.id}`)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(204);
 
       const blogAtEnd = await helper.blogsInDB();
-      expect(blogAtEnd).toHaveLength(helper.initialBlogs.length - 1);
+      expect(blogAtEnd).toHaveLength(helper.initialBlogs.length);
     });
   });
 
@@ -121,15 +157,24 @@ describe('when there is some blogs save', () => {
       const blogAtStart = await helper.blogsInDB();
       const blogIDToBeUpdated = blogAtStart[0].id;
 
-      await api.put(`/api/blogs/${blogIDToBeUpdated}`).send(helper.dataToUpdate).expect(200);
+      await api
+        .put(`/api/blogs/${blogIDToBeUpdated}`)
+        .send(helper.dataToUpdate)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(200);
 
       const blogsAtEnd = await helper.blogsInDB();
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
       const {
         title, author, url, likes,
-      } = blogsAtEnd.find((blog) => blog.id === blogIDToBeUpdated);
+      } = blogsAtEnd.find(
+        (blog) => blog.id === blogIDToBeUpdated,
+      );
       const dataAfter = {
-        title, author, url, likes,
+        title,
+        author,
+        url,
+        likes,
       };
       expect(dataAfter).toMatchObject(helper.dataToUpdate);
     });
@@ -139,18 +184,27 @@ describe('when there is some blogs save', () => {
       const blogIDToBeUpdated = blogAtStart[0].id;
       const dataWithUnwantedPros = {
         ...helper.dataToUpdate,
-        yikes: 'This property shouldn\'t exist',
+        yikes: "This property shouldn't exist",
       };
 
-      await api.put(`/api/blogs/${blogIDToBeUpdated}`).send(dataWithUnwantedPros).expect(200);
+      await api
+        .put(`/api/blogs/${blogIDToBeUpdated}`)
+        .send(dataWithUnwantedPros)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(200);
 
       const blogsAtEnd = await helper.blogsInDB();
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
       const {
         title, author, url, likes, yikes,
-      } = blogsAtEnd.find((blog) => blog.id === blogIDToBeUpdated);
+      } = blogsAtEnd.find(
+        (blog) => blog.id === blogIDToBeUpdated,
+      );
       const dataAfter = {
-        title, author, url, likes,
+        title,
+        author,
+        url,
+        likes,
       };
       expect(dataAfter).toMatchObject(helper.dataToUpdate);
       expect(yikes).toEqual(undefined);
@@ -163,15 +217,25 @@ describe('when there is some blogs save', () => {
         title: helper.dataToUpdate.title,
       };
 
-      await api.put(`/api/blogs/${blogToBeUpdated.id}`).send(updatedTitle).expect(200);
+      await api
+        .put(`/api/blogs/${blogToBeUpdated.id}`)
+        .send(updatedTitle)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(200);
 
       const blogsAtEnd = await helper.blogsInDB();
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
       const {
         id, title, author, url, likes,
-      } = blogsAtEnd.find((blog) => blog.id === blogToBeUpdated.id);
+      } = blogsAtEnd.find(
+        (blog) => blog.id === blogToBeUpdated.id,
+      );
       const dataAfter = {
-        id, title, author, url, likes,
+        id,
+        title,
+        author,
+        url,
+        likes,
       };
       expect(dataAfter).toMatchObject({
         ...blogToBeUpdated,
@@ -186,15 +250,25 @@ describe('when there is some blogs save', () => {
         author: 'Hien Minh Sinh',
       };
 
-      await api.put(`/api/blogs/${blogToBeUpdated.id}`).send(updatedAuthor).expect(200);
+      await api
+        .put(`/api/blogs/${blogToBeUpdated.id}`)
+        .send(updatedAuthor)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(200);
 
       const blogsAtEnd = await helper.blogsInDB();
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
       const {
         id, title, author, url, likes,
-      } = blogsAtEnd.find((blog) => blog.id === blogToBeUpdated.id);
+      } = blogsAtEnd.find(
+        (blog) => blog.id === blogToBeUpdated.id,
+      );
       const dataAfter = {
-        id, title, author, url, likes,
+        id,
+        title,
+        author,
+        url,
+        likes,
       };
       expect(dataAfter).toMatchObject({
         ...blogToBeUpdated,
@@ -209,15 +283,25 @@ describe('when there is some blogs save', () => {
         likes: 20,
       };
 
-      await api.put(`/api/blogs/${blogToBeUpdated.id}`).send(updatedLikes).expect(200);
+      await api
+        .put(`/api/blogs/${blogToBeUpdated.id}`)
+        .send(updatedLikes)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(200);
 
       const blogsAtEnd = await helper.blogsInDB();
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
       const {
         id, title, author, url, likes,
-      } = blogsAtEnd.find((blog) => blog.id === blogToBeUpdated.id);
+      } = blogsAtEnd.find(
+        (blog) => blog.id === blogToBeUpdated.id,
+      );
       const dataAfter = {
-        id, title, author, url, likes,
+        id,
+        title,
+        author,
+        url,
+        likes,
       };
       expect(dataAfter).toMatchObject({
         ...blogToBeUpdated,
@@ -232,14 +316,24 @@ describe('when there is some blogs save', () => {
         title: null,
       };
 
-      await api.put(`/api/blogs/${blogToBeUpdated.id}`).send(invalidUpdateData).expect(400);
+      await api
+        .put(`/api/blogs/${blogToBeUpdated.id}`)
+        .send(invalidUpdateData)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(400);
       const blogsAtEnd = await helper.blogsInDB();
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
       const {
         id, title, author, url, likes,
-      } = blogsAtEnd.find((blog) => blog.id === blogToBeUpdated.id);
+      } = blogsAtEnd.find(
+        (blog) => blog.id === blogToBeUpdated.id,
+      );
       const dataAfter = {
-        id, title, author, url, likes,
+        id,
+        title,
+        author,
+        url,
+        likes,
       };
       expect(dataAfter).toMatchObject(blogToBeUpdated);
     });
@@ -250,14 +344,24 @@ describe('when there is some blogs save', () => {
         url: null,
       };
 
-      await api.put(`/api/blogs/${blogToBeUpdated.id}`).send(invalidUpdateData).expect(400);
+      await api
+        .put(`/api/blogs/${blogToBeUpdated.id}`)
+        .send(invalidUpdateData)
+        .set('Authorization', `Bearer ${userLoginInfo.token}`)
+        .expect(400);
       const blogsAtEnd = await helper.blogsInDB();
       expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length);
       const {
         id, title, author, url, likes,
-      } = blogsAtEnd.find((blog) => blog.id === blogToBeUpdated.id);
+      } = blogsAtEnd.find(
+        (blog) => blog.id === blogToBeUpdated.id,
+      );
       const dataAfter = {
-        id, title, author, url, likes,
+        id,
+        title,
+        author,
+        url,
+        likes,
       };
       expect(dataAfter).toMatchObject(blogToBeUpdated);
     });
@@ -265,5 +369,6 @@ describe('when there is some blogs save', () => {
 });
 
 afterAll(async () => {
+  await helper.clearUserSchema();
   await mongoose.connection.close();
 });
