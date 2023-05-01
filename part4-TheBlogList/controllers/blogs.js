@@ -1,8 +1,9 @@
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
+const User = require('../models/user');
 
 blogsRouter.get('/', async (_request, response) => {
-  const blogs = await Blog.find({});
+  const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
   response.json(blogs);
 });
 
@@ -10,14 +11,22 @@ blogsRouter.post('/', async (request, response) => {
   const {
     title, author, url, likes,
   } = request.body;
+  // FIXME: now only using the first user that find in the database
+  const userFixed = await User.findOne();
+
   const blog = new Blog({
     title,
     author,
     url,
     likes: likes ?? 0,
+    user: userFixed.id,
   });
 
   const blogSaved = await blog.save();
+
+  userFixed.blogs = userFixed.blogs.concat(blogSaved._id);
+  await userFixed.save();
+
   response.status(201).json(blogSaved);
 });
 
