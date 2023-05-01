@@ -1,4 +1,6 @@
+const jwt = require('jsonwebtoken');
 const morgan = require('morgan');
+const User = require('../models/user');
 const logger = require('./logger');
 
 /** {@link https://github.com/expressjs/morgan#app List all available format supported} */
@@ -13,6 +15,21 @@ const tokenExtractor = (request, _response, next) => {
   if (authorization && authorization.startsWith('Bearer ')) {
     request.token = authorization.replace('Bearer ', '');
   }
+  next();
+};
+
+const userExtractor = async (request, response, next) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    response.status(401).json({ error: 'token invalid' });
+    return;
+  }
+  const user = await User.findById(decodedToken.id);
+  if (!user) {
+    response.status(401).json({ error: `seem like this user with id ${decodedToken.id} doesn't exist` });
+    return;
+  }
+  request.user = user;
   next();
 };
 
@@ -39,4 +56,5 @@ module.exports = {
   errorHandler,
   morganMiddleware,
   tokenExtractor,
+  userExtractor,
 };

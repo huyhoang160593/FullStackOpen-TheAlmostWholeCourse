@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const logger = require('./utils/logger');
 const { MONGODB_URI } = require('./utils/config');
 const {
-  morganMiddleware, errorHandler, unknownEndpoint, tokenExtractor,
+  morganMiddleware, errorHandler, unknownEndpoint, tokenExtractor, userExtractor,
 } = require('./utils/middleware');
 /* NOTES: make sure this below library will be import before any router require or else the
  * error will not be pass
@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(morganMiddleware);
 app.use(tokenExtractor);
 
-app.use('/api/blogs', blogsRouter);
+app.use('/api/blogs', userExtractor, blogsRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 
