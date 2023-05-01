@@ -5,9 +5,20 @@ const User = require('../models/user');
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body;
 
+  if (!password) {
+    response.status(400).send({
+      error: 'expect `password` to be defined',
+    });
+    return;
+  }
+  if (password.length < 3) {
+    response.status(400).send({
+      error: 'expect `password` to have length at least 3 character long',
+    });
+    return;
+  }
   const saltRounds = 10;
   const passwordHash = await brcypt.hash(password, saltRounds);
-
   const user = new User({
     username,
     name,
