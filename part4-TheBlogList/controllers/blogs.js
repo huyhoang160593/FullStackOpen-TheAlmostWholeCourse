@@ -1,6 +1,15 @@
+const jwt = require('jsonwebtoken');
 const blogsRouter = require('express').Router();
 const Blog = require('../models/blog');
 const User = require('../models/user');
+
+const getTokenFrom = (request) => {
+  const authorization = request.get('authorization');
+  if (authorization && authorization.startsWith('Bearer ')) {
+    return authorization.replace('Bearer ', '');
+  }
+  return null;
+};
 
 blogsRouter.get('/', async (_request, response) => {
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 });
@@ -8,26 +17,29 @@ blogsRouter.get('/', async (_request, response) => {
 });
 
 blogsRouter.post('/', async (request, response) => {
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' });
+  }
   const {
     title, author, url, likes,
   } = request.body;
-  // FIXME: now only using the first user that find in the database
-  const userFixed = await User.findOne();
+  const user = await User.findById(decodedToken.id);
 
   const blog = new Blog({
     title,
     author,
     url,
     likes: likes ?? 0,
-    user: userFixed.id,
+    user: user._id,
   });
 
   const blogSaved = await blog.save();
 
-  userFixed.blogs = userFixed.blogs.concat(blogSaved._id);
-  await userFixed.save();
+  user.blogs = user.blogs.concat(blogSaved._id);
+  await user.save();
 
-  response.status(201).json(blogSaved);
+  return response.status(201).json(blogSaved);
 });
 
 blogsRouter.delete('/:id', async (request, response) => {
@@ -38,11 +50,14 @@ blogsRouter.delete('/:id', async (request, response) => {
 
 blogsRouter.put('/:id', async (request, response) => {
   const validKeys = ['title', 'author', 'url', 'likes'];
-  const updateData = Object.entries(request.body).reduce((updateObject, entry) => {
-    if (!validKeys.includes(entry[0])) return updateObject;
-    updateObject[entry[0]] = entry[1];
-    return updateObject;
-  }, {});
+  const updateData = Object.entries(request.body).reduce(
+    (updateObject, entry) => {
+      if (!validKeys.includes(entry[0])) return updateObject;
+      updateObject[entry[0]] = entry[1];
+      return updateObject;
+    },
+    {},
+  );
   const updatedBlog = await Blog.findByIdAndUpdate(
     request.params.id,
     updateData,
