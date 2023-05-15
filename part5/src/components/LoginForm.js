@@ -1,8 +1,9 @@
 import { useState } from "react";
 import loginService from "./../services/login"
 import blogsService from "./../services/blogs"
+import { ERROR } from "./Notification";
 
-const LoginForm = ({ setUser }) => {
+const LoginForm = ({ setUser, displayNotification }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -21,12 +22,12 @@ const LoginForm = ({ setUser }) => {
       setPassword('')
     } catch (exception) {
       // TODO: add exception later
+      displayNotification('wrong username or password', ERROR)
     }
   }
 
   return (
     <form onSubmit={handleLogin}>
-      <h2>log in to application</h2>
       <div>
         username
         <input type="text" name="Username" value={username} onChange={({target}) => setUsername(target.value)}/>
