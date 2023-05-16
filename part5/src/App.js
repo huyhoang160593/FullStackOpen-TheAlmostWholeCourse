@@ -21,7 +21,7 @@ const defaultNotificationState = {
 };
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState(/** @type {import('./components/Blog').Blog[]} */([]));
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState({
     ...defaultNotificationState,
@@ -110,7 +110,7 @@ const App = () => {
             />
           </Togglable>
 
-          {blogs.map((blog) => (
+          {blogs.sort((a,b) => b.likes - a.likes).map((blog) => (
             <Blog key={blog.id} blog={blog} updateBlogList={updateBlogHandle} />
           ))}
         </>
