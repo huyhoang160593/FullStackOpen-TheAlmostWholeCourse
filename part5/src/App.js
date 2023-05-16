@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef } from 'react';
-import Blog from './components/Blog';
-import blogService from './services/blogs';
+import { useState, useEffect, useRef } from 'react'
+import Blog from './components/Blog'
+import blogService from './services/blogs'
 
-import LoginForm from './components/LoginForm';
-import CreateBlogForm from './components/CreateBlogForm';
-import Notification, { SUCCESS } from './components/Notification';
-import Togglable from './components/Togglable';
+import LoginForm from './components/LoginForm'
+import CreateBlogForm from './components/CreateBlogForm'
+import Notification, { SUCCESS } from './components/Notification'
+import Togglable from './components/Togglable'
 
 /**
  * @callback DisplayEvent
@@ -18,70 +18,70 @@ import Togglable from './components/Togglable';
 const defaultNotificationState = {
   type: null,
   message: null,
-};
+}
 
 const App = () => {
   const [blogs, setBlogs] = useState(
     /** @type {import('./components/Blog').Blog[]} */ ([])
-  );
-  const [user, setUser] = useState(null);
+  )
+  const [user, setUser] = useState(null)
   const [notification, setNotification] = useState({
     ...defaultNotificationState,
-  });
+  })
   /** @type {import('react').MutableRefObject<import('./components/Togglable').ImperativeObject>} */
-  const blogFormToggleRef = useRef();
+  const blogFormToggleRef = useRef()
 
   useEffect(() => {
-    if (!user) return;
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, [user]);
+    if (!user) return
+    blogService.getAll().then((blogs) => setBlogs(blogs))
+  }, [user])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser');
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
     }
-  }, []);
+  }, [])
 
   /** @type {React.MouseEventHandler<HTMLButtonElement>} */
   const handleLogout = (event) => {
-    event.preventDefault();
-    window.localStorage.removeItem('loggedBlogUser');
-    setUser(null);
-  };
+    event.preventDefault()
+    window.localStorage.removeItem('loggedBlogUser')
+    setUser(null)
+  }
 
   const updateBlogHandle = (updatedBlog) => {
     const injectUser = {
       id: updatedBlog.user,
       name: user.name,
       username: user.username,
-    };
-    updatedBlog.user = injectUser;
+    }
+    updatedBlog.user = injectUser
     setBlogs(
       blogs.map((currentBlog) =>
         currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog
       )
-    );
-  };
+    )
+  }
 
   const deleteBlogHandle = (deletedBlog) => {
-    setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id));
-  };
+    setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id))
+  }
 
   /** @type {DisplayEvent} */
   const displayNotification = (message, type = SUCCESS, timeout = 3000) => {
     setNotification({
       message,
       type,
-    });
+    })
     setTimeout(() => {
       setNotification({
         ...defaultNotificationState,
-      });
-    }, timeout);
-  };
+      })
+    }, timeout)
+  }
   return (
     <div>
       {!user && (
@@ -134,7 +134,7 @@ const App = () => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

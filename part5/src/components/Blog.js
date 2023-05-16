@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import blogsServices from '../services/blogs';
+import { useState } from 'react'
+import blogsServices from '../services/blogs'
 
 /**
  * @typedef {Object} User
@@ -28,7 +28,7 @@ import blogsServices from '../services/blogs';
 
 /** @param {Props} props */
 const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
-  const [toggle, setToggle] = useState(false);
+  const [toggle, setToggle] = useState(false)
   /** @type {import('react').CSSProperties} */
   const blogStyle = {
     paddingTop: 10,
@@ -36,10 +36,10 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5,
-  };
+  }
   /** @type {React.MouseEventHandler<HTMLButtonElement>} */
   const onLikesClickHandle = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
       const updatedBlog = await blogsServices.put(blog.id, {
         user: blog.user.id,
@@ -47,25 +47,25 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
         author: blog.author,
         title: blog.title,
         url: blog.url,
-      });
-      updateBlogList(updatedBlog);
+      })
+      updateBlogList(updatedBlog)
     } catch (error) {
       //TODO: add exception when needed
     }
-  };
+  }
 
   /** @type {React.MouseEventHandler<HTMLButtonElement>} */
   const onRemoveBlogHandle = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
     try {
       if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-        await blogsServices.deleteItem(blog.id);
-        deleteBlogList(blog);
+        await blogsServices.deleteItem(blog.id)
+        deleteBlogList(blog)
       }
     } catch (error) {
       //TODO: add exception when needed
     }
-  };
+  }
 
   return (
     <div style={blogStyle}>
@@ -96,7 +96,7 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
         </>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default Blog;
+export default Blog

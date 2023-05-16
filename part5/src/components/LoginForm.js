@@ -1,7 +1,8 @@
-import { useState } from "react";
-import loginService from "./../services/login"
-import blogsService from "./../services/blogs"
-import { ERROR } from "./Notification";
+import { useState } from 'react'
+import loginService from './../services/login'
+import blogsService from './../services/blogs'
+import { ERROR } from './Notification'
+import PropTypes from 'prop-types'
 
 /**
  * @typedef Props
@@ -11,8 +12,8 @@ import { ERROR } from "./Notification";
 
 /** @param {Props} props */
 const LoginForm = ({ setUser, displayNotification }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   /** @type {React.FormEventHandler<HTMLFormElement>} */
   const handleLogin = async (event) => {
@@ -37,15 +38,20 @@ const LoginForm = ({ setUser, displayNotification }) => {
     <form onSubmit={handleLogin}>
       <div>
         username
-        <input type="text" name="Username" value={username} onChange={({target}) => setUsername(target.value)}/>
+        <input type="text" name="Username" value={username} onChange={({ target }) => setUsername(target.value)}/>
       </div>
       <div>
         password
-        <input type="password" name="Password" value={password} onChange={({target}) => setPassword(target.value)}/>
+        <input type="password" name="Password" value={password} onChange={({ target }) => setPassword(target.value)}/>
       </div>
       <button type="submit">login</button>
     </form>
-  );
-};
+  )
+}
 
-export default LoginForm;
+LoginForm.propTypes = {
+  setUser: PropTypes.func.isRequired,
+  displayNotification: PropTypes.func.isRequired
+}
+
+export default LoginForm

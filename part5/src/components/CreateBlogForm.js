@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import blogsService from '../services/blogs';
+import { useState } from 'react'
+import blogsService from '../services/blogs'
 
 /**
  * @typedef {Object} Props
@@ -12,38 +12,38 @@ import blogsService from '../services/blogs';
 
 /** @param {Props} props */
 const CreateBlogForm = ({ toggleVisibility, user, blogs, setBlogs, displayNotification }) => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [url, setUrl] = useState('');
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   /** @type {React.FormEventHandler<HTMLFormElement>} */
   const handleCreateBlog = async (event) => {
-    event.preventDefault();
+    event.preventDefault()
 
     try {
       const newBlog = await blogsService.create({
         title,
         author,
         url,
-      });
+      })
       const injectUser = {
         id: newBlog.user,
         name: user.name,
         username: user.username
       }
-      newBlog.user = injectUser;
-      setBlogs(blogs.concat(newBlog));
+      newBlog.user = injectUser
+      setBlogs(blogs.concat(newBlog))
       displayNotification(
         `a new blog ${newBlog.title} by ${newBlog.author} added`
-      );
+      )
       toggleVisibility()
-      setTitle('');
-      setAuthor('');
-      setUrl('');
+      setTitle('')
+      setAuthor('')
+      setUrl('')
     } catch (exception) {
       // TODO: add exception if request failed
     }
-  };
+  }
   return (
     <form onSubmit={handleCreateBlog}>
       <div>
@@ -75,7 +75,7 @@ const CreateBlogForm = ({ toggleVisibility, user, blogs, setBlogs, displayNotifi
       </div>
       <button type="submit">create</button>
     </form>
-  );
-};
+  )
+}
 
-export default CreateBlogForm;
+export default CreateBlogForm

@@ -14,7 +14,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react'
  * @param {import('react').PropsWithChildren<Props>} props
  * @param {import('react').ForwardedRef<ImperativeObject>} refs
  * */
-const Togglable = ({children, buttonLabel}, refs) => {
+const Togglable = ({ children, buttonLabel }, refs) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
