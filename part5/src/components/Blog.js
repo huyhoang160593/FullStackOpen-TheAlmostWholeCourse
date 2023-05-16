@@ -22,7 +22,6 @@ import { useState } from 'react';
 
 /** @param {Props} props */
 const Blog = ({ blog }) => {
-  console.log(blog)
   const [toggle, setToggle] = useState(false);
   /** @type {import('react').CSSProperties} */
   const blogStyle = {

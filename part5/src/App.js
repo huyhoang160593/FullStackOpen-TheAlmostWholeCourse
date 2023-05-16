@@ -26,7 +26,7 @@ const App = () => {
   const [notification, setNotification] = useState({
     ...defaultNotificationState,
   });
-
+  console.log(user)
   useEffect(() => {
     if (!user) return;
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -90,6 +90,7 @@ const App = () => {
           <h2>create new</h2>
           <Togglable buttonLabel="new blog">
             <CreateBlogForm
+              user={user}
               blogs={blogs}
               setBlogs={setBlogs}
               displayNotification={displayNotification}
