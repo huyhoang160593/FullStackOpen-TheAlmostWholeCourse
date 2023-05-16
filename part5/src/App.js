@@ -5,6 +5,7 @@ import blogService from './services/blogs';
 import LoginForm from './components/LoginForm';
 import CreateBlogForm from './components/CreateBlogForm';
 import Notification, { SUCCESS } from './components/Notification';
+import Togglable from './components/Togglable';
 const defaultNotificationState = {
   type: null,
   message: null,
@@ -74,7 +75,9 @@ const App = () => {
           </p>
 
           <h2>create new</h2>
-          <CreateBlogForm blogs={blogs} setBlogs={setBlogs} displayNotification={displayNotification}/>
+          <Togglable buttonLabel='new blog'>
+            <CreateBlogForm blogs={blogs} setBlogs={setBlogs} displayNotification={displayNotification}/>
+          </Togglable>
 
           {blogs.map((blog) => (
             <Blog key={blog.id} blog={blog} />
