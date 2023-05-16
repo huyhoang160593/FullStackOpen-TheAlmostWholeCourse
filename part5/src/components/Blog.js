@@ -1,13 +1,16 @@
 import { useState } from 'react';
+import blogsServices from '../services/blogs';
 
 /**
  * @typedef {Object} User
+ * @property {id} id
  * @property {string} name
  * @property {string} username
  * */
 
 /**
  * @typedef {Object} Blog
+ * @property {string} id
  * @property {string} title
  * @property {string} author
  * @property {string} url
@@ -18,10 +21,11 @@ import { useState } from 'react';
 /**
  * @typedef {Object} Props
  * @property {Blog} blog
+ * @property {(blog) => void} updateBlogList
  * */
 
 /** @param {Props} props */
-const Blog = ({ blog }) => {
+const Blog = ({ blog, updateBlogList }) => {
   const [toggle, setToggle] = useState(false);
   /** @type {import('react').CSSProperties} */
   const blogStyle = {
@@ -31,6 +35,23 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+  /** @type {React.MouseEventHandler<HTMLButtonElement>} */
+  const onLikesClickHandle = async (event) => {
+    event.preventDefault()
+    try {
+      const updatedBlog = await blogsServices.put(blog.id, {
+        user: blog.user.id,
+        likes: blog.likes + 1,
+        author: blog.author,
+        title: blog.title,
+        url: blog.url
+      })
+      updateBlogList(updatedBlog)
+    } catch (error) {
+      //TODO: add exception when needed
+    }
+  }
+
   return (
     <div style={blogStyle}>
       <section>
@@ -44,7 +65,7 @@ const Blog = ({ blog }) => {
           <section>{blog.url}</section>
           <section>
             {blog.likes}
-            <button>likes</button>
+            <button onClick={onLikesClickHandle}>likes</button>
           </section>
           <section>{blog.user.name}</section>
         </>

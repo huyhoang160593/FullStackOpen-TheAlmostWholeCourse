@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Blog from './components/Blog';
 import blogService from './services/blogs';
 
@@ -26,7 +26,9 @@ const App = () => {
   const [notification, setNotification] = useState({
     ...defaultNotificationState,
   });
-  console.log(user)
+  /** @type {import('react').MutableRefObject<import('./components/Togglable').ImperativeObject>} */
+  const blogFormToggleRef = useRef()
+
   useEffect(() => {
     if (!user) return;
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -47,6 +49,16 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogUser');
     setUser(null);
   };
+
+  const updateBlogHandle = (updatedBlog) => {
+    const injectUser = {
+      id: updatedBlog.user,
+      name: user.name,
+      username: user.username
+    }
+    updatedBlog.user = injectUser;
+    setBlogs(blogs.map(currentBlog => currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog))
+  }
 
   /** @type {DisplayEvent} */
   const displayNotification = (message, type = SUCCESS, timeout = 3000) => {
@@ -88,17 +100,18 @@ const App = () => {
           </p>
 
           <h2>create new</h2>
-          <Togglable buttonLabel="new blog">
+          <Togglable buttonLabel="new blog" ref={blogFormToggleRef}>
             <CreateBlogForm
               user={user}
               blogs={blogs}
               setBlogs={setBlogs}
               displayNotification={displayNotification}
+              toggleVisibility={blogFormToggleRef.current?.toggleVisibility}
             />
           </Togglable>
 
           {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} updateBlogList={updateBlogHandle} />
           ))}
         </>
       )}

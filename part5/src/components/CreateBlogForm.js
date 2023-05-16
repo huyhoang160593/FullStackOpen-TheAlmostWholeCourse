@@ -7,10 +7,11 @@ import blogsService from '../services/blogs';
  * @property {import("./Blog").User} user
  * @property {React.Dispatch<React.SetStateAction<never[]>>} setBlogs
  * @property {import("../App").DisplayEvent} displayNotification
+ * @property {() => void} toggleVisibility
  */
 
 /** @param {Props} props */
-const CreateBlogForm = ({ user, blogs, setBlogs, displayNotification }) => {
+const CreateBlogForm = ({ toggleVisibility, user, blogs, setBlogs, displayNotification }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
@@ -25,14 +26,17 @@ const CreateBlogForm = ({ user, blogs, setBlogs, displayNotification }) => {
         author,
         url,
       });
-      newBlog.user = {
+      const injectUser = {
+        id: newBlog.user,
         name: user.name,
-        username: user.username,
-      };
+        username: user.username
+      }
+      newBlog.user = injectUser;
       setBlogs(blogs.concat(newBlog));
       displayNotification(
         `a new blog ${newBlog.title} by ${newBlog.author} added`
       );
+      toggleVisibility()
       setTitle('');
       setAuthor('');
       setUrl('');

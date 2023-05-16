@@ -29,5 +29,17 @@ const create = async (newObject) => {
   return response.data
 }
 
+const put = async (id, newObject) => {
+  /** @type {import('axios').RawAxiosRequestConfig<any>} */
+  const config = {
+    headers: {
+      Authorization: token
+    }
+  }
+
+  const response = await axios.put(`${baseUrl}/${id}`, newObject, config)
+  return response.data
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, create, setToken }
+export default { getAll, create, setToken, put }
