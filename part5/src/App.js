@@ -21,13 +21,15 @@ const defaultNotificationState = {
 };
 
 const App = () => {
-  const [blogs, setBlogs] = useState(/** @type {import('./components/Blog').Blog[]} */([]));
+  const [blogs, setBlogs] = useState(
+    /** @type {import('./components/Blog').Blog[]} */ ([])
+  );
   const [user, setUser] = useState(null);
   const [notification, setNotification] = useState({
     ...defaultNotificationState,
   });
   /** @type {import('react').MutableRefObject<import('./components/Togglable').ImperativeObject>} */
-  const blogFormToggleRef = useRef()
+  const blogFormToggleRef = useRef();
 
   useEffect(() => {
     if (!user) return;
@@ -54,11 +56,19 @@ const App = () => {
     const injectUser = {
       id: updatedBlog.user,
       name: user.name,
-      username: user.username
-    }
+      username: user.username,
+    };
     updatedBlog.user = injectUser;
-    setBlogs(blogs.map(currentBlog => currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog))
-  }
+    setBlogs(
+      blogs.map((currentBlog) =>
+        currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog
+      )
+    );
+  };
+
+  const deleteBlogHandle = (deletedBlog) => {
+    setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id));
+  };
 
   /** @type {DisplayEvent} */
   const displayNotification = (message, type = SUCCESS, timeout = 3000) => {
@@ -110,9 +120,17 @@ const App = () => {
             />
           </Togglable>
 
-          {blogs.sort((a,b) => b.likes - a.likes).map((blog) => (
-            <Blog key={blog.id} blog={blog} updateBlogList={updateBlogHandle} />
-          ))}
+          {blogs
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => (
+              <Blog
+                user={user}
+                key={blog.id}
+                blog={blog}
+                updateBlogList={updateBlogHandle}
+                deleteBlogList={deleteBlogHandle}
+              />
+            ))}
         </>
       )}
     </div>

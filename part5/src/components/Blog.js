@@ -21,11 +21,13 @@ import blogsServices from '../services/blogs';
 /**
  * @typedef {Object} Props
  * @property {Blog} blog
+ * @property {User} user
  * @property {(blog) => void} updateBlogList
+ * @property {(blog) => void} deleteBlogList
  * */
 
 /** @param {Props} props */
-const Blog = ({ blog, updateBlogList }) => {
+const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
   const [toggle, setToggle] = useState(false);
   /** @type {import('react').CSSProperties} */
   const blogStyle = {
@@ -37,20 +39,33 @@ const Blog = ({ blog, updateBlogList }) => {
   };
   /** @type {React.MouseEventHandler<HTMLButtonElement>} */
   const onLikesClickHandle = async (event) => {
-    event.preventDefault()
+    event.preventDefault();
     try {
       const updatedBlog = await blogsServices.put(blog.id, {
         user: blog.user.id,
         likes: blog.likes + 1,
         author: blog.author,
         title: blog.title,
-        url: blog.url
-      })
-      updateBlogList(updatedBlog)
+        url: blog.url,
+      });
+      updateBlogList(updatedBlog);
     } catch (error) {
       //TODO: add exception when needed
     }
-  }
+  };
+
+  /** @type {React.MouseEventHandler<HTMLButtonElement>} */
+  const onRemoveBlogHandle = async (event) => {
+    event.preventDefault();
+    try {
+      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+        await blogsServices.deleteItem(blog.id);
+        deleteBlogList(blog);
+      }
+    } catch (error) {
+      //TODO: add exception when needed
+    }
+  };
 
   return (
     <div style={blogStyle}>
@@ -68,6 +83,16 @@ const Blog = ({ blog, updateBlogList }) => {
             <button onClick={onLikesClickHandle}>likes</button>
           </section>
           <section>{blog.user.name}</section>
+          <button
+            style={{
+              backgroundColor: 'blue',
+              color: 'white',
+              visibility: blog.user.username === user?.username ? 'visible' : 'hidden'
+            }}
+            onClick={onRemoveBlogHandle}
+          >
+            remove
+          </button>
         </>
       )}
     </div>

@@ -41,5 +41,15 @@ const put = async (id, newObject) => {
   return response.data
 }
 
+const deleteItem = async (id) => {
+  /** @type {import('axios').RawAxiosRequestConfig<any>} */
+  const config = {
+    headers: {
+      Authorization: token
+    }
+  }
+  await axios.delete(`${baseUrl}/${id}`, config)
+}
+
 // eslint-disable-next-line import/no-anonymous-default-export
-export default { getAll, create, setToken, put }
+export default { getAll, create, setToken, put, deleteItem }
