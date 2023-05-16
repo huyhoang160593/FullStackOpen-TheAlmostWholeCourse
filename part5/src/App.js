@@ -6,6 +6,15 @@ import LoginForm from './components/LoginForm';
 import CreateBlogForm from './components/CreateBlogForm';
 import Notification, { SUCCESS } from './components/Notification';
 import Togglable from './components/Togglable';
+
+/**
+ * @callback DisplayEvent
+ * @param {string} message
+ * @param {string} type
+ * @param {number} timeout
+ * @returns {void}
+ */
+
 const defaultNotificationState = {
   type: null,
   message: null,
@@ -39,6 +48,7 @@ const App = () => {
     setUser(null);
   };
 
+  /** @type {DisplayEvent} */
   const displayNotification = (message, type = SUCCESS, timeout = 3000) => {
     setNotification({
       message,
@@ -59,7 +69,10 @@ const App = () => {
             message={notification.message}
             type={notification.type}
           />
-          <LoginForm setUser={setUser} displayNotification={displayNotification} />
+          <LoginForm
+            setUser={setUser}
+            displayNotification={displayNotification}
+          />
         </>
       )}
       {user && (
@@ -75,8 +88,12 @@ const App = () => {
           </p>
 
           <h2>create new</h2>
-          <Togglable buttonLabel='new blog'>
-            <CreateBlogForm blogs={blogs} setBlogs={setBlogs} displayNotification={displayNotification}/>
+          <Togglable buttonLabel="new blog">
+            <CreateBlogForm
+              blogs={blogs}
+              setBlogs={setBlogs}
+              displayNotification={displayNotification}
+            />
           </Togglable>
 
           {blogs.map((blog) => (

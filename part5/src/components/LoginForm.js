@@ -3,6 +3,13 @@ import loginService from "./../services/login"
 import blogsService from "./../services/blogs"
 import { ERROR } from "./Notification";
 
+/**
+ * @typedef Props
+ * @property {React.Dispatch<React.SetStateAction<null>>} setUser
+ * @property {import("../App").DisplayEvent} displayNotification
+ * */
+
+/** @param {Props} props */
 const LoginForm = ({ setUser, displayNotification }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');

@@ -1,5 +1,14 @@
 import { useState } from "react";
 import blogsService from "../services/blogs"
+
+/**
+ * @typedef {Object} Props
+ * @property {import("./Blog").Blog[]} blogs
+ * @property {React.Dispatch<React.SetStateAction<never[]>>} setBlogs
+ * @property {import("../App").DisplayEvent} displayNotification
+ */
+
+/** @param {Props} props */
 const CreateBlogForm = ({blogs, setBlogs, displayNotification}) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');

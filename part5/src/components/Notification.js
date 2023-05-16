@@ -1,8 +1,15 @@
+/**
+ * @typedef Props
+ * @property {string} type
+ * @property {string} message
+ */
+
 export const { ERROR, SUCCESS } = {
   ERROR: "ERROR",
   SUCCESS: "SUCCESS",
 };
 
+/** @param {Props} props */
 const Notification = ({ type = SUCCESS, message }) => {
   if (message === null) {
     return null;
