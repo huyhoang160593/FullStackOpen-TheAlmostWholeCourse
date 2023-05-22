@@ -2,6 +2,7 @@ import '@testing-library/jest-dom/extend-expect'
 import userEvent from '@testing-library/user-event'
 import { render, screen } from '@testing-library/react'
 import Blog from './Blog'
+import axios from 'axios'
 
 /** @type {import("./Blog").User} */
 const user = {
@@ -22,8 +23,9 @@ const blog = {
 describe('<Blog />', () => {
   /** @type {import('@testing-library/react').RenderResult} */
   let containerRender
+  let updateBlogMockHandle = jest.fn()
   beforeEach(() => {
-    containerRender = render(<Blog blog={blog} user={user} />)
+    containerRender = render(<Blog blog={blog} user={user} updateBlogList={updateBlogMockHandle} />)
   })
   test('renders title and author but hide url and likes', () => {
     const { container } = containerRender
@@ -53,5 +55,19 @@ describe('<Blog />', () => {
     expect(hiddenURLElement).toHaveTextContent(blog.url)
     expect(hiddenLikesElement).toBeDefined()
     expect(hiddenLikesElement).toHaveTextContent(`${blog.likes}`)
+  })
+
+  test('clicking likes button 2 times call event handle twice', async () => {
+    const userEventMock = userEvent.setup()
+
+    const showButton = screen.getByText('view')
+
+    await userEventMock.click(showButton)
+    const likesButton = screen.getByText('likes')
+    const mock = jest.spyOn(axios, 'put')
+    mock.mockResolvedValue({ ...blog, likes: 8 })
+    await userEventMock.click(likesButton)
+    await userEventMock.click(likesButton)
+    expect(updateBlogMockHandle.mock.calls).toHaveLength(2)
   })
 })
