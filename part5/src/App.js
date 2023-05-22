@@ -10,8 +10,8 @@ import Togglable from './components/Togglable'
 /**
  * @callback DisplayEvent
  * @param {string} message
- * @param {string} type
- * @param {number} timeout
+ * @param {string} [type="SUCCESS"]
+ * @param {number} [timeout]
  * @returns {void}
  */
 
@@ -50,6 +50,20 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
+  }
+
+  const createBlogHandle = async (newBlogData) => {
+    const newBlog = await blogService.create(newBlogData)
+    const injectUser = {
+      id: newBlog.user,
+      name: user.name,
+      username: user.username,
+    }
+    newBlog.user = injectUser
+    setBlogs(blogs.concat(newBlog))
+    displayNotification(
+      `a new blog ${newBlog.title} by ${newBlog.author} added`
+    )
   }
 
   const updateBlogHandle = (updatedBlog) => {
@@ -112,10 +126,7 @@ const App = () => {
           <h2>create new</h2>
           <Togglable buttonLabel="new blog" ref={blogFormToggleRef}>
             <CreateBlogForm
-              user={user}
-              blogs={blogs}
-              setBlogs={setBlogs}
-              displayNotification={displayNotification}
+              createBlogHandle={createBlogHandle}
               toggleVisibility={blogFormToggleRef.current?.toggleVisibility}
             />
           </Togglable>

@@ -1,17 +1,13 @@
 import { useState } from 'react'
-import blogsService from '../services/blogs'
 
 /**
  * @typedef {Object} Props
- * @property {import("./Blog").Blog[]} blogs
- * @property {import("./Blog").User} user
- * @property {React.Dispatch<React.SetStateAction<never[]>>} setBlogs
- * @property {import("../App").DisplayEvent} displayNotification
- * @property {() => void} toggleVisibility
+ * @property {Function} createBlogHandle
+ * @property {() => void} [toggleVisibility]
  */
 
 /** @param {Props} props */
-const CreateBlogForm = ({ toggleVisibility, user, blogs, setBlogs, displayNotification }) => {
+const CreateBlogForm = ({ toggleVisibility, createBlogHandle }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -19,23 +15,8 @@ const CreateBlogForm = ({ toggleVisibility, user, blogs, setBlogs, displayNotifi
   /** @type {React.FormEventHandler<HTMLFormElement>} */
   const handleCreateBlog = async (event) => {
     event.preventDefault()
-
     try {
-      const newBlog = await blogsService.create({
-        title,
-        author,
-        url,
-      })
-      const injectUser = {
-        id: newBlog.user,
-        name: user.name,
-        username: user.username
-      }
-      newBlog.user = injectUser
-      setBlogs(blogs.concat(newBlog))
-      displayNotification(
-        `a new blog ${newBlog.title} by ${newBlog.author} added`
-      )
+      await createBlogHandle({ title, author, url })
       toggleVisibility()
       setTitle('')
       setAuthor('')
