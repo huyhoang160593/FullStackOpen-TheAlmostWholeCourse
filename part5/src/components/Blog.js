@@ -3,7 +3,7 @@ import blogsServices from '../services/blogs'
 
 /**
  * @typedef {Object} User
- * @property {id} id
+ * @property {string} id
  * @property {string} name
  * @property {string} username
  * */
@@ -22,8 +22,8 @@ import blogsServices from '../services/blogs'
  * @typedef {Object} Props
  * @property {Blog} blog
  * @property {User} user
- * @property {(blog) => void} updateBlogList
- * @property {(blog) => void} deleteBlogList
+ * @property {(blog: Blog) => void} [updateBlogList]
+ * @property {(blog: Blog) => void} [deleteBlogList]
  * */
 
 /** @param {Props} props */
@@ -69,7 +69,7 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
 
   return (
     <div style={blogStyle}>
-      <section>
+      <section aria-label="blogTitleAuthor">
         {blog.title} {blog.author}
         <button onClick={() => setToggle(!toggle)}>
           {toggle ? 'hide' : 'view'}
@@ -77,12 +77,12 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
       </section>
       {toggle && (
         <>
-          <section>{blog.url}</section>
-          <section>
+          <section aria-label='blogURL'>{blog.url}</section>
+          <section aria-label='blogLikes'>
             {blog.likes}
             <button onClick={onLikesClickHandle}>likes</button>
           </section>
-          <section>{blog.user.name}</section>
+          <section aria-label='blogUserName'>{blog.user.name}</section>
           <button
             style={{
               backgroundColor: 'blue',
