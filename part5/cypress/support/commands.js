@@ -43,3 +43,7 @@ Cypress.Commands.add('createBlog', ({ author, title, url }) => {
     }
   })
 })
+
+Cypress.Commands.add('createUser', ({ name, username, password }) => {
+  cy.request('POST', `${Cypress.env('BACKEND')}/users`, { name, username, password })
+})

@@ -1,4 +1,15 @@
 describe('Blog app', function () {
+  const mainTestUser = {
+    name: 'The 99\'s Puppycat',
+    username: 'puppycat99',
+    password: 'puppycatSecret',
+  }
+  const testBlog = {
+    title: 'A dream that can\'t come true',
+    author: 'The Dead within',
+    url: 'https://google.com.vn',
+  }
+
   beforeEach(function () {
     cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
   })
@@ -10,12 +21,7 @@ describe('Blog app', function () {
 
   describe('Login', function () {
     beforeEach(function () {
-      const testUser = {
-        name: 'The 99\'s Puppycat',
-        username: 'puppycat99',
-        password: 'puppycatSecret',
-      }
-      cy.request('POST', `${Cypress.env('BACKEND')}/users`, testUser)
+      cy.createUser(mainTestUser)
       cy.visit('')
     })
 
@@ -39,13 +45,11 @@ describe('Blog app', function () {
 
   describe('When logged in', function () {
     beforeEach(function () {
-      const testUser = {
-        name: 'The 99\'s Puppycat',
-        username: 'puppycat99',
-        password: 'puppycatSecret',
-      }
-      cy.request('POST', `${Cypress.env('BACKEND')}/users`, testUser)
-      cy.login({ username: testUser.username, password: testUser.password })
+      cy.createUser(mainTestUser)
+      cy.login({
+        username: mainTestUser.username,
+        password: mainTestUser.password,
+      })
     })
 
     it('A blog can be created', function () {
@@ -67,11 +71,6 @@ describe('Blog app', function () {
 
     describe('and a blog exist', function () {
       beforeEach(function () {
-        const testBlog = {
-          title:'A dream that can\'t come true',
-          author: 'The Dead within',
-          url: 'https://google.com.vn'
-        }
         cy.createBlog(testBlog)
         cy.visit('')
       })
@@ -85,7 +84,7 @@ describe('Blog app', function () {
         cy.get('[aria-label="blogLikes"]').should('contain.text', '1')
       })
 
-      it.only('user can delete a blog', function() {
+      it('user can delete a blog', function () {
         cy.get('[aria-label="blogContainer"]').should('exist')
 
         cy.contains('view').click()
@@ -93,6 +92,31 @@ describe('Blog app', function () {
 
         cy.get('[aria-label="blogContainer"]').should('not.exist')
       })
+    })
+  })
+  describe('When there is another blog from other user', function () {
+    beforeEach(function () {
+      const otherUser = {
+        name: 'root',
+        username: 'theroot01',
+        password: 'meowsekret',
+      }
+      cy.createUser(mainTestUser)
+      cy.createUser(otherUser)
+      cy.login({ username: otherUser.username, password: otherUser.password })
+      cy.createBlog(testBlog)
+      cy.login({
+        username: mainTestUser.username,
+        password: mainTestUser.password,
+      })
+      cy.visit('')
+    })
+
+    it.only('cannot delete that blog from other user', function () {
+      cy.get('[aria-label="blogContainer"]').should('exist')
+
+      cy.contains('view').click()
+      cy.get('[name="RemoveButton"]').should('have.css', 'visibility', 'hidden')
     })
   })
 })
