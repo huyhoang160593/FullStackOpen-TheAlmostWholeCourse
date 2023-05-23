@@ -43,7 +43,7 @@ describe('Blog app', function () {
     })
   })
 
-  describe('When logged in', function () {
+  describe('When logged in, ', function () {
     beforeEach(function () {
       cy.createUser(mainTestUser)
       cy.login({
@@ -52,7 +52,7 @@ describe('Blog app', function () {
       })
     })
 
-    it('A blog can be created', function () {
+    it('a blog can be created', function () {
       cy.visit('')
 
       cy.get('[aria-label="blogContainer"]').should('not.exist')
@@ -75,7 +75,7 @@ describe('Blog app', function () {
         cy.visit('')
       })
 
-      it('user can like a blog', function () {
+      it('user can like a blog,', function () {
         cy.get('[aria-label="blogContainer"]').should('exist')
 
         cy.contains('view').click()
@@ -94,7 +94,7 @@ describe('Blog app', function () {
       })
     })
   })
-  describe('When there is another blog from other user', function () {
+  describe('When there is another blog from other user,', function () {
     beforeEach(function () {
       const otherUser = {
         name: 'root',
@@ -112,11 +112,56 @@ describe('Blog app', function () {
       cy.visit('')
     })
 
-    it.only('cannot delete that blog from other user', function () {
+    it('cannot delete that blog from other user', function () {
       cy.get('[aria-label="blogContainer"]').should('exist')
 
       cy.contains('view').click()
-      cy.get('[name="RemoveButton"]').should('have.css', 'visibility', 'hidden')
+      cy.get('[name="RemoveButton"]').should(
+        'have.css',
+        'visibility',
+        'hidden'
+      )
+    })
+  })
+  describe('When there is multiple blog from one user', function () {
+    const anotherBlog = {
+      title: 'My Orange Tree',
+      author: 'Unknown',
+      url: 'https://google.com.jp',
+    }
+    beforeEach(function () {
+      cy.createUser(mainTestUser)
+      cy.login({
+        username: mainTestUser.username,
+        password: mainTestUser.password,
+      })
+      cy.createBlog(testBlog)
+      cy.createBlog(anotherBlog)
+      cy.visit('')
+    })
+
+    it.only('those blogs is ordered according to likes', function () {
+      cy.get('[aria-label="blogContainer"]').eq(0).as('firstBlog')
+      cy.get('[aria-label="blogContainer"]').eq(1).as('secondBlog')
+
+      cy.get('@firstBlog').should('contain', `${testBlog.title} ${testBlog.author}`)
+      cy.get('@secondBlog').should('contain', `${anotherBlog.title} ${anotherBlog.author}`)
+
+      cy.get('@secondBlog').find('button').click()
+      cy.get('[name="LikeButton"]').click()
+      cy.contains('hide').click()
+
+      cy.get('@firstBlog').should('contain', `${anotherBlog.title} ${anotherBlog.author}`)
+      cy.get('@secondBlog').should('contain', `${testBlog.title} ${testBlog.author}`)
+
+      cy.get('@secondBlog').find('button').click()
+      cy.get('[name="LikeButton"]').click()
+      cy.get('[aria-label="blogLikes"]').should('contain.text', '1')
+      cy.get('[name="LikeButton"]').click()
+      cy.contains('hide').click()
+
+      cy.get('@firstBlog').should('contain', `${testBlog.title} ${testBlog.author}`)
+      cy.get('@secondBlog').should('contain', `${anotherBlog.title} ${anotherBlog.author}`)
     })
   })
 })
