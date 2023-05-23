@@ -84,6 +84,7 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
           </section>
           <section aria-label='blogUserName'>{blog.user.name}</section>
           <button
+            name='RemoveButton'
             style={{
               backgroundColor: 'blue',
               color: 'white',

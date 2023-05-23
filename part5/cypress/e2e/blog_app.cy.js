@@ -76,13 +76,22 @@ describe('Blog app', function () {
         cy.visit('')
       })
 
-      it.only('user can like a blog', function () {
+      it('user can like a blog', function () {
         cy.get('[aria-label="blogContainer"]').should('exist')
 
         cy.contains('view').click()
         cy.get('[aria-label="blogLikes"]').should('contain.text', '0')
         cy.get('[name="LikeButton"]').click()
         cy.get('[aria-label="blogLikes"]').should('contain.text', '1')
+      })
+
+      it.only('user can delete a blog', function() {
+        cy.get('[aria-label="blogContainer"]').should('exist')
+
+        cy.contains('view').click()
+        cy.get('[name="RemoveButton"]').click()
+
+        cy.get('[aria-label="blogContainer"]').should('not.exist')
       })
     })
   })
