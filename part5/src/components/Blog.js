@@ -68,7 +68,7 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div aria-label='blogContainer' style={blogStyle}>
       <section aria-label="blogTitleAuthor">
         {blog.title} {blog.author}
         <button onClick={() => setToggle(!toggle)}>

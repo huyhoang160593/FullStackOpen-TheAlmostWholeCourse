@@ -54,7 +54,7 @@ const CreateBlogForm = ({ toggleVisibility, createBlogHandle }) => {
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
-      <button type="submit">create</button>
+      <button name='createButton' type="submit">create</button>
     </form>
   )
 }
