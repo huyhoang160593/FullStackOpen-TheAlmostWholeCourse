@@ -80,7 +80,7 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
           <section aria-label='blogURL'>{blog.url}</section>
           <section aria-label='blogLikes'>
             {blog.likes}
-            <button onClick={onLikesClickHandle}>likes</button>
+            <button name='LikeButton' onClick={onLikesClickHandle}>likes</button>
           </section>
           <section aria-label='blogUserName'>{blog.user.name}</section>
           <button

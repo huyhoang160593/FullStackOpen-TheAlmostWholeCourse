@@ -6,7 +6,8 @@
     "target": "es2020",
     "module": "es2015",
     "baseUrl": "src",
-    "jsx": "react-jsx"
+    "typeRoots": ["./node_modules/@types", "./cypress/types"],
+    "jsx": "react-jsx",
   },
   "exclude": [
     "dist",
@@ -15,7 +16,7 @@
     ".vscode",
     "coverage",
     ".npm",
-    ".yarn"
+    ".yarn",
   ],
   "typeAcquisition": {
     "enable": true,
@@ -25,5 +26,5 @@
       "jest",
       "testing-library__jest-dom"
     ]
-  }
+  },
 }
