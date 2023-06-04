@@ -3,7 +3,7 @@
     {
       "content": "If it hurts, do it more often",
       "id": "47145",
-      "votes": 1
+      "votes": 3
     },
     {
       "content": "Adding manpower to a late software project makes it later!",
@@ -38,6 +38,11 @@
     {
       "content": "This one is create with Redux Thunk",
       "id": "17893",
+      "votes": 0
+    },
+    {
+      "content": "Some thing is changing",
+      "id": "78404",
       "votes": 0
     }
   ]
