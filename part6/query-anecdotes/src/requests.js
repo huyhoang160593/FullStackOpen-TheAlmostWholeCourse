@@ -9,3 +9,7 @@ export const getAnecdotes = () => {
 export const createAnecdote = (newAnecdote) => ky.post(baseURL, {
   json: newAnecdote
 }).json()
+
+export const appendVote = (updatedAnecdote) => ky.put(`${baseURL}/${updatedAnecdote.id}`, {
+  json: updatedAnecdote
+}).json()
