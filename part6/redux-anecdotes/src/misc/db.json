@@ -34,6 +34,11 @@
       "content": "This is a new note",
       "id": "39908",
       "votes": 0
+    },
+    {
+      "content": "This one is create with Redux Thunk",
+      "id": "17893",
+      "votes": 0
     }
   ]
 }
