@@ -3,10 +3,12 @@ import AnecdoteForm from './components/AnecdoteForm';
 import Notification from './components/Notification';
 import { appendVote, getAnecdotes } from 'requests';
 import queryKeys from 'misc/queryKey';
+import { displayNotificationCurried, useNotificationDispatch } from 'NotificationContext';
 
 const App = () => {
   const queryClient = useQueryClient();
   const appendVoteMutation = useMutation(appendVote);
+  const displayNotification = displayNotificationCurried(useNotificationDispatch())
 
   const handleVote = (anecdote) => {
     appendVoteMutation.mutate(
@@ -23,6 +25,7 @@ const App = () => {
               anecdote.id !== updatedAnecdote.id ? anecdote : updatedAnecdote
             )
           );
+          displayNotification(`anecdote '${updatedAnecdote.content}' voted`)
         },
       }
     );
