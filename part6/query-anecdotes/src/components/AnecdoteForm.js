@@ -18,6 +18,13 @@ const AnecdoteForm = () => {
         const anecdotes = queryClient.getQueryData(queryKeys.anecdotes)
         queryClient.setQueryData(queryKeys.anecdotes, anecdotes.concat(newAnecdote))
         displayNotification(`anecdote '${content} created'`)
+      },
+      onError: (error) => {
+        if(error?.response?.status === 400) {
+          displayNotification('too short anecdote, must have length 5 or more')
+          return
+        }
+        displayNotification('there is error with the server, please check back later')
       }
     })
 }
