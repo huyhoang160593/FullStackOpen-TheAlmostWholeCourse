@@ -7,7 +7,7 @@ export function AnecdoteForm() {
   const addAnecdote = (event) => {
     event.preventDefault();
     const newAnecdote = event.target.anecdote.value
-    dispatch(createAnecdote(newAnecdote))
+    dispatch(createAnecdote({anecdote: newAnecdote}))
   }
   return (<>
     <h2>create new</h2>
