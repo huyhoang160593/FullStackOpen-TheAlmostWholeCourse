@@ -16,8 +16,20 @@ const createNew = async (content) => {
   return response
 }
 
+const appendVote = async(anecdoteObject) => {
+  const newAnecdoteObject = {
+    ...anecdoteObject,
+    votes: anecdoteObject.votes + 1
+  }
+  const response = await ky.put(`${baseURL}/${anecdoteObject.id}`, {
+    json: newAnecdoteObject
+  }).json()
+  return response
+}
+
 const anecdoteServices = {
   getAll,
-  createNew
+  createNew,
+  appendVote
 }
 export default anecdoteServices

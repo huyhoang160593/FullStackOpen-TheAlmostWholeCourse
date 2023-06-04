@@ -11,9 +11,9 @@ export function AnecdoteList() {
     }
     return anecdotesSort.filter(anecdote => anecdote.content.includes(state.filter))
   });
-  const vote = (id, content) => {
-    dispatch(voteAnecdote({id}));
-    dispatch(displayNotification(`you voted '${content}'`))
+  const vote = (anecdotesObject) => {
+    dispatch(voteAnecdote(anecdotesObject));
+    dispatch(displayNotification(`you voted '${anecdotesObject.content}'`))
     setTimeout(() =>{
       dispatch(removeNotification())
     }, 5000)
@@ -25,7 +25,7 @@ export function AnecdoteList() {
       </div>
       <div>
         has {anecdote.votes}
-        <button onClick={() => vote(anecdote.id, anecdote.content)}>vote</button>
+        <button onClick={() => vote(anecdote)}>vote</button>
       </div>
     </div>
     )}
