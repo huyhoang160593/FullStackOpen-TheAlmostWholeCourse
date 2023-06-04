@@ -2,6 +2,7 @@ import { useQuery } from 'react-query'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { getAnecdotes } from 'requests'
+import queryKeys from 'misc/queryKey'
 
 const App = () => {
 
@@ -9,7 +10,7 @@ const App = () => {
     console.log('vote')
   }
 
-  const result = useQuery('anecdotes', getAnecdotes, {
+  const result = useQuery(queryKeys.anecdotes, getAnecdotes, {
     retry: false
   })
 
