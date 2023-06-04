@@ -8,6 +8,7 @@ export function AnecdoteForm() {
   const addAnecdote = async (event) => {
     event.preventDefault();
     const newAnecdoteContent = event.target.anecdote.value
+    event.target.anecdote.value = ''
     const newAnecdoteObject = await anecdoteServices.createNew(newAnecdoteContent)
     dispatch(createAnecdote(newAnecdoteObject))
   }
