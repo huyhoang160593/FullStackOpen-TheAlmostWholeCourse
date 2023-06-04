@@ -17,7 +17,8 @@ const asObject = (anecdote) => {
   }
 }
 export const ACTIONS = {
-  VOTE: 'VOTE'
+  VOTE: 'VOTE',
+  NEW: 'NEW'
 }
 
 const initialState = anecdotesAtStart.map(asObject)
@@ -34,6 +35,10 @@ const reducer = (state = initialState, action) => {
         votes: anecdoteToChange.votes + 1
       }
       return state.map(anecdote => anecdote.id !== id ? anecdote : changedAnecdote)
+    }
+    case ACTIONS.NEW: {
+      const newAnecdote = asObject(action.payload.anecdote)
+      return [...state, newAnecdote]
     }
     default: {
       return state
