@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Routes, Route, Link, useMatch } from "react-router-dom";
+import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom";
 
 /**
  * @typedef {{ content: string; author: string; info: string; votes: number; id: number;}} Anecdote
@@ -64,7 +64,15 @@ const Footer = () => (
   </div>
 )
 
+/**
+ * @typedef {Object} CreateNewProps
+ * @property {(anecdote: Anecdote) => void} addNew
+ * @property {React.Dispatch<React.SetStateAction<string>>} setNotification
+ * */
+
+/** @param {CreateNewProps} props */
 const CreateNew = (props) => {
+  const navigate = useNavigate()
   const [content, setContent] = useState('')
   const [author, setAuthor] = useState('')
   const [info, setInfo] = useState('')
@@ -78,6 +86,8 @@ const CreateNew = (props) => {
       info,
       votes: 0
     })
+    navigate('/')
+    props.setNotification(`a new anecdote ${content} created!`)
   }
 
   return (
@@ -148,9 +158,10 @@ const App = () => {
     <>
       <h1>Software anecdotes</h1>
       <Menu />
+      <div>{notification}</div>
       <Routes>
         <Route path='/anecdote/:id' element={<AnecdoteDetail anecdote={anecdote} />} />
-        <Route path='/create' element={<CreateNew addNew={addNew} />} />
+        <Route path='/create' element={<CreateNew addNew={addNew} setNotification={setNotification}/>} />
         <Route path='/about' element={<About />} />
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />}/>
       </Routes>
