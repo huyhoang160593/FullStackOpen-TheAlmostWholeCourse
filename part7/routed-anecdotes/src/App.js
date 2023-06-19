@@ -48,7 +48,9 @@ const AnecdoteList = ({ anecdotes }) => (
 const AnecdoteDetail = ({ anecdote }) => {
   return (
     <section>
-      <h1>{anecdote.content} by {anecdote.author}</h1>
+      <h1>
+        {anecdote.content} by {anecdote.author}
+      </h1>
       <p>has {anecdote.votes} votes</p>
       <p>
         for more info see <a href={anecdote.info}>{anecdote.info}</a>
@@ -99,9 +101,9 @@ const Footer = () => (
 /** @param {CreateNewProps} props */
 const CreateNew = (props) => {
   const navigate = useNavigate();
-  const content = useField('text');
-  const author = useField('text');
-  const info = useField('text');
+  const { reset: contentReset, ...content } = useField('text');
+  const { reset: authorReset, ...author } = useField('text');
+  const { reset: infoReset, ...info } = useField('text');
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -117,10 +119,10 @@ const CreateNew = (props) => {
 
   /** @type {React.FormEventHandler<HTMLFormElement>} */
   const onResetHandle = (event) => {
-    content.reset()
-    author.reset()
-    info.reset()
-  }
+    contentReset();
+    authorReset();
+    infoReset();
+  };
 
   return (
     <div>
@@ -132,7 +134,7 @@ const CreateNew = (props) => {
         </div>
         <div>
           author
-          <input {...author}/>
+          <input {...author} />
         </div>
         <div>
           url for more info
