@@ -115,23 +115,31 @@ const CreateNew = (props) => {
     props.setNotification(`a new anecdote ${content.value} created!`);
   };
 
+  /** @type {React.FormEventHandler<HTMLFormElement>} */
+  const onResetHandle = (event) => {
+    content.reset()
+    author.reset()
+    info.reset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} onReset={onResetHandle}>
         <div>
           content
           <input {...content} />
         </div>
         <div>
           author
-          <input {...author} />
+          <input {...author}/>
         </div>
         <div>
           url for more info
           <input {...info} />
         </div>
         <button>create</button>
+        <button type="reset">reset</button>
       </form>
     </div>
   );
