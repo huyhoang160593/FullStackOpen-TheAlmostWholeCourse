@@ -7,7 +7,7 @@
     "module": "es2015",
     "baseUrl": "src",
     "typeRoots": ["./node_modules/@types", "./cypress/types"],
-    "jsx": "react-jsx",
+    "jsx": "react-jsx"
   },
   "exclude": [
     "dist",
@@ -16,15 +16,10 @@
     ".vscode",
     "coverage",
     ".npm",
-    ".yarn",
+    ".yarn"
   ],
   "typeAcquisition": {
     "enable": true,
-    "include": [
-      "react",
-      "react-dom",
-      "jest",
-      "testing-library__jest-dom"
-    ]
-  },
+    "include": ["react", "react-dom", "jest", "testing-library__jest-dom"]
+  }
 }
