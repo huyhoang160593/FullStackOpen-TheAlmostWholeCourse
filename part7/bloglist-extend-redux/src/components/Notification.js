@@ -1,23 +1,16 @@
-/**
- * @typedef Props
- * @property {string} type
- * @property {string} message
- */
 
-export const { ERROR, SUCCESS } = {
-  ERROR: 'ERROR',
-  SUCCESS: 'SUCCESS',
-}
+import { SUCCESS } from 'reducers/notificationReducer'
+import { useAppSelector } from 'store.js'
 
-/** @param {Props} props */
-const Notification = ({ type = SUCCESS, message }) => {
-  if (message === null) {
+const Notification = () => {
+  const notification = useAppSelector((state) => state.notification)
+  if (notification.message === null) {
     return null
   }
-  if (type === SUCCESS) {
-    return <div className="notification">{message}</div>
+  if (notification.type === SUCCESS) {
+    return <div className="notification">{notification.message}</div>
   }
-  return <div className="notification error">{message}</div>
+  return <div className="notification error">{notification.message}</div>
 }
 
 export default Notification

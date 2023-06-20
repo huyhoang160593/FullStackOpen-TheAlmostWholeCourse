@@ -4,30 +4,18 @@ import blogService from './services/blogs'
 
 import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
-import Notification, { SUCCESS } from './components/Notification'
+import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-
-/**
- * @callback DisplayEvent
- * @param {string} message
- * @param {string} [type="SUCCESS"]
- * @param {number} [timeout]
- * @returns {void}
- */
-
-const defaultNotificationState = {
-  type: null,
-  message: null,
-}
+import { SUCCESS, setNotification } from 'reducers/notificationReducer'
+import { useAppDispatch } from 'store.js'
 
 const App = () => {
+  const dispatch = useAppDispatch()
   const [blogs, setBlogs] = useState(
     /** @type {import('./components/Blog').Blog[]} */ ([])
   )
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState({
-    ...defaultNotificationState,
-  })
+
   /** @type {import('react').MutableRefObject<import('./components/Togglable').ImperativeObject>} */
   const blogFormToggleRef = useRef()
 
@@ -61,8 +49,11 @@ const App = () => {
     }
     newBlog.user = injectUser
     setBlogs(blogs.concat(newBlog))
-    displayNotification(
-      `a new blog ${newBlog.title} by ${newBlog.author} added`
+    dispatch(
+      setNotification({
+        message: `a new blog ${newBlog.title} by ${newBlog.author} added`,
+        type: SUCCESS,
+      })
     )
   }
 
@@ -84,40 +75,19 @@ const App = () => {
     setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id))
   }
 
-  /** @type {DisplayEvent} */
-  const displayNotification = (message, type = SUCCESS, timeout = 3000) => {
-    setNotification({
-      message,
-      type,
-    })
-    setTimeout(() => {
-      setNotification({
-        ...defaultNotificationState,
-      })
-    }, timeout)
-  }
   return (
     <div>
       {!user && (
         <>
           <h2>log in to application</h2>
-          <Notification
-            message={notification.message}
-            type={notification.type}
-          />
-          <LoginForm
-            setUser={setUser}
-            displayNotification={displayNotification}
-          />
+          <Notification />
+          <LoginForm setUser={setUser} />
         </>
       )}
       {user && (
         <>
           <h2>blogs</h2>
-          <Notification
-            message={notification.message}
-            type={notification.type}
-          />
+          <Notification />
           <p>
             {user.username} logged in{' '}
             <button onClick={handleLogout}>logout</button>
