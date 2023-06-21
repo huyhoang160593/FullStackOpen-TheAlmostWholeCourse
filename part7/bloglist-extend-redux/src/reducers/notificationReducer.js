@@ -48,7 +48,7 @@ export const { displayNotification, removeNotification } =
  *
  * @param {State} notificationObject
  * @param {number} timeoutBySeconds
- * @returns {*}
+ * @returns {import("@reduxjs/toolkit").ThunkAction<void, import('store.js').RootState, unknown, import('@reduxjs/toolkit').AnyAction>}
  */
 export const setNotification = (notificationObject, timeoutBySeconds = 5) => {
   return async (dispatch) => {

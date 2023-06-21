@@ -1,4 +1,3 @@
-
 import { SUCCESS } from 'reducers/notificationReducer'
 import { useAppSelector } from 'store.js'
 
@@ -7,10 +6,14 @@ const Notification = () => {
   if (notification.message === null) {
     return null
   }
-  if (notification.type === SUCCESS) {
-    return <div className="notification">{notification.message}</div>
+  switch (notification.type) {
+    case SUCCESS: {
+      return <div className="notification">{notification.message}</div>
+    }
+    default: {
+      return <div className="notification error">{notification.message}</div>
+    }
   }
-  return <div className="notification error">{notification.message}</div>
 }
 
 export default Notification
