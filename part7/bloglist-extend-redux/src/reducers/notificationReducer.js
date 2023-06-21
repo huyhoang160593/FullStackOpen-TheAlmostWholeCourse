@@ -41,7 +41,7 @@ const notificationReducer = createSlice({
   },
 })
 
-export const { displayNotification, removeNotification } =
+const { displayNotification, removeNotification } =
   notificationReducer.actions
 
 /**

@@ -6,14 +6,14 @@ import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import { SUCCESS, setNotification } from 'reducers/notificationReducer'
-import { useAppDispatch } from 'store.js'
+import { useAppDispatch, useAppSelector } from 'store.js'
+import { fetchBlogs } from 'reducers/blogsReducers'
 
 const App = () => {
-  const dispatch = useAppDispatch()
-  const [blogs, setBlogs] = useState(
-    /** @type {import('./components/Blog').Blog[]} */ ([])
+  const blogs = useAppSelector((state) =>
+    state.blogs.concat().sort((a, b) => b.likes - a.likes)
   )
+  const dispatch = useAppDispatch()
   const [user, setUser] = useState(null)
 
   /** @type {import('react').MutableRefObject<import('./components/Togglable').ImperativeObject>} */
@@ -21,7 +21,7 @@ const App = () => {
 
   useEffect(() => {
     if (!user) return
-    blogService.getAll().then((blogs) => setBlogs(blogs))
+    dispatch(fetchBlogs())
   }, [user])
 
   useEffect(() => {
@@ -40,23 +40,6 @@ const App = () => {
     setUser(null)
   }
 
-  const createBlogHandle = async (newBlogData) => {
-    const newBlog = await blogService.create(newBlogData)
-    const injectUser = {
-      id: newBlog.user,
-      name: user.name,
-      username: user.username,
-    }
-    newBlog.user = injectUser
-    setBlogs(blogs.concat(newBlog))
-    dispatch(
-      setNotification({
-        message: `a new blog ${newBlog.title} by ${newBlog.author} added`,
-        type: SUCCESS,
-      })
-    )
-  }
-
   const updateBlogHandle = (updatedBlog) => {
     const injectUser = {
       id: updatedBlog.user,
@@ -64,15 +47,17 @@ const App = () => {
       username: user.username,
     }
     updatedBlog.user = injectUser
-    setBlogs(
-      blogs.map((currentBlog) =>
-        currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog
-      )
-    )
+    // TODO: using redux to modified the blog
+    // setBlogs(
+    //   blogs.map((currentBlog) =>
+    //     currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog
+    //   )
+    // )
   }
 
-  const deleteBlogHandle = (deletedBlog) => {
-    setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id))
+  const deleteBlogHandle = (_deletedBlog) => {
+    // TODO: using redux to delete the blog
+    // setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id))
   }
 
   return (
@@ -96,22 +81,20 @@ const App = () => {
           <h2>create new</h2>
           <Togglable buttonLabel="new blog" ref={blogFormToggleRef}>
             <CreateBlogForm
-              createBlogHandle={createBlogHandle}
+              user={user}
               toggleVisibility={blogFormToggleRef.current?.toggleVisibility}
             />
           </Togglable>
 
-          {blogs
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog
-                user={user}
-                key={blog.id}
-                blog={blog}
-                updateBlogList={updateBlogHandle}
-                deleteBlogList={deleteBlogHandle}
-              />
-            ))}
+          {blogs.map((blog) => (
+            <Blog
+              user={user}
+              key={blog.id}
+              blog={blog}
+              updateBlogList={updateBlogHandle}
+              deleteBlogList={deleteBlogHandle}
+            />
+          ))}
         </>
       )}
     </div>

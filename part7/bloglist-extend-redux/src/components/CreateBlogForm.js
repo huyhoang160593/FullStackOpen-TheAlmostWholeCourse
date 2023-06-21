@@ -1,13 +1,16 @@
 import { useState } from 'react'
+import { addBlog } from 'reducers/blogsReducers'
+import { useAppDispatch } from 'store.js'
 
 /**
  * @typedef {Object} Props
- * @property {Function} createBlogHandle
- * @property {() => void} [toggleVisibility]
+ * @property {User} user
+ * @property {import("./Togglable").ImperativeObject['toggleVisibility']} [toggleVisibility]
  */
 
 /** @param {Props} props */
-const CreateBlogForm = ({ toggleVisibility, createBlogHandle }) => {
+const CreateBlogForm = ({ toggleVisibility, user }) => {
+  const dispatch = useAppDispatch()
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
@@ -15,15 +18,11 @@ const CreateBlogForm = ({ toggleVisibility, createBlogHandle }) => {
   /** @type {React.FormEventHandler<HTMLFormElement>} */
   const handleCreateBlog = async (event) => {
     event.preventDefault()
-    try {
-      await createBlogHandle({ title, author, url })
-      toggleVisibility()
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-    } catch (exception) {
-      // TODO: add exception if request failed
-    }
+    await dispatch(addBlog({ title, author, url }, user))
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    toggleVisibility(false)
   }
   return (
     <form onSubmit={handleCreateBlog}>
@@ -54,7 +53,9 @@ const CreateBlogForm = ({ toggleVisibility, createBlogHandle }) => {
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
-      <button name='createButton' type="submit">create</button>
+      <button name="createButton" type="submit">
+        create
+      </button>
     </form>
   )
 }

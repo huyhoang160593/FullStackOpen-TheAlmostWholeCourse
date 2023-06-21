@@ -7,7 +7,7 @@ import { forwardRef, useImperativeHandle, useState } from 'react'
 
 /**
  * @typedef {Object} ImperativeObject
- * @property {() => void} toggleVisibility
+ * @property {(forceState: boolean) => void} toggleVisibility
  */
 
 /**
@@ -20,7 +20,8 @@ const Togglable = ({ children, buttonLabel }, refs) => {
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
-  const toggleVisibility = () => {
+  const toggleVisibility = (forceState) => {
+    if(typeof forceState === 'boolean') return setVisible(forceState)
     setVisible(!visible)
   }
 
@@ -33,11 +34,11 @@ const Togglable = ({ children, buttonLabel }, refs) => {
   return (
     <div>
       <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
+        <button onClick={() => toggleVisibility()}>{buttonLabel}</button>
       </div>
       <div style={showWhenVisible}>
         {children}
-        <button onClick={toggleVisibility}>cancel</button>
+        <button onClick={() => toggleVisibility()}>cancel</button>
       </div>
     </div>
   )
