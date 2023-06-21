@@ -17,10 +17,14 @@ const blogsReducer = createSlice({
         action.payload.id === blog.id ? action.payload : blog
       )
     },
+    /** @param {{payload: string, type: string}} action  */
+    deleteBlog(state, action) {
+      return state.filter(blog => blog.id !== action.payload)
+    }
   },
 })
 
-const { appendBlogs, updateBlog } = blogsReducer.actions
+const { appendBlogs, updateBlog, deleteBlog } = blogsReducer.actions
 
 /** All Thunk Actions */
 
@@ -77,6 +81,21 @@ export const changeBlog = (blogId, blogObject, user) => {
       }
       updatedBlog.user = injectUser
       dispatch(updateBlog(updatedBlog))
+    } catch (error) {
+      return error
+    }
+  }
+}
+
+/**
+ * @param {string} blogId
+ * @returns {import("@reduxjs/toolkit").ThunkAction<Promise<void | any>, import('store.js').RootState, unknown, import('@reduxjs/toolkit').AnyAction>}
+ */
+export const removeBlog = (blogId) => {
+  return async (dispatch) => {
+    try {
+      await blogServices.deleteItem(blogId)
+      dispatch(deleteBlog(blogId))
     } catch (error) {
       return error
     }

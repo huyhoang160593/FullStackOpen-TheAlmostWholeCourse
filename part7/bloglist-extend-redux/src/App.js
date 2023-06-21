@@ -40,26 +40,6 @@ const App = () => {
     setUser(null)
   }
 
-  const updateBlogHandle = (updatedBlog) => {
-    const injectUser = {
-      id: updatedBlog.user,
-      name: user.name,
-      username: user.username,
-    }
-    updatedBlog.user = injectUser
-    // TODO: using redux to modified the blog
-    // setBlogs(
-    //   blogs.map((currentBlog) =>
-    //     currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog
-    //   )
-    // )
-  }
-
-  const deleteBlogHandle = (_deletedBlog) => {
-    // TODO: using redux to delete the blog
-    // setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id))
-  }
-
   return (
     <div>
       {!user && (
@@ -87,13 +67,7 @@ const App = () => {
           </Togglable>
 
           {blogs.map((blog) => (
-            <Blog
-              user={user}
-              key={blog.id}
-              blog={blog}
-              updateBlogList={updateBlogHandle}
-              deleteBlogList={deleteBlogHandle}
-            />
+            <Blog user={user} key={blog.id} blog={blog} />
           ))}
         </>
       )}

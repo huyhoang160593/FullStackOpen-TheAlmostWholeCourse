@@ -1,17 +1,15 @@
 import { useState } from 'react'
-import blogsServices from '../services/blogs'
 import { useAppDispatch } from 'store.js'
-import { changeBlog } from 'reducers/blogsReducers'
+import { changeBlog, removeBlog } from 'reducers/blogsReducers'
 
 /**
  * @typedef {Object} Props
  * @property {Blog} blog
  * @property {User} user
- * @property {(blog: Blog) => void} [deleteBlogList]
  * */
 
 /** @param {Props} props */
-const Blog = ({ blog, user, deleteBlogList }) => {
+const Blog = ({ blog, user }) => {
   const dispatch = useAppDispatch()
   const [toggle, setToggle] = useState(false)
   /** @type {import('react').CSSProperties} */
@@ -42,13 +40,11 @@ const Blog = ({ blog, user, deleteBlogList }) => {
   /** @type {React.MouseEventHandler<HTMLButtonElement>} */
   const onRemoveBlogHandle = async (event) => {
     event.preventDefault()
-    try {
-      if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
-        await blogsServices.deleteItem(blog.id)
-        deleteBlogList(blog)
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      const error = dispatch(removeBlog(blog.id))
+      if(error) {
+        // TODO: handle error here
       }
-    } catch (error) {
-      //TODO: add exception when needed
     }
   }
 
