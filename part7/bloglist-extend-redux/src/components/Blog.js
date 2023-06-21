@@ -1,16 +1,18 @@
 import { useState } from 'react'
 import blogsServices from '../services/blogs'
+import { useAppDispatch } from 'store.js'
+import { changeBlog } from 'reducers/blogsReducers'
 
 /**
  * @typedef {Object} Props
  * @property {Blog} blog
  * @property {User} user
- * @property {(blog: Blog) => void} [updateBlogList]
  * @property {(blog: Blog) => void} [deleteBlogList]
  * */
 
 /** @param {Props} props */
-const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
+const Blog = ({ blog, user, deleteBlogList }) => {
+  const dispatch = useAppDispatch()
   const [toggle, setToggle] = useState(false)
   /** @type {import('react').CSSProperties} */
   const blogStyle = {
@@ -20,20 +22,20 @@ const Blog = ({ blog, user, updateBlogList, deleteBlogList }) => {
     borderWidth: 1,
     marginBottom: 5,
   }
-  /** @type {React.MouseEventHandler<HTMLButtonElement>} */
+  /** @param {React.MouseEvent<HTMLButtonElement, MouseEvent> & { target: HTMLButtonElement }} event */
   const onLikesClickHandle = async (event) => {
     event.preventDefault()
-    try {
-      const updatedBlog = await blogsServices.put(blog.id, {
-        user: blog.user.id,
-        likes: blog.likes + 1,
-        author: blog.author,
-        title: blog.title,
-        url: blog.url,
-      })
-      updateBlogList(updatedBlog)
-    } catch (error) {
-      //TODO: add exception when needed
+    event.currentTarget.disabled = true
+
+    const error = await dispatch(changeBlog(blog.id, {
+      likes: blog.likes + 1,
+      author: blog.author,
+      title: blog.title,
+      url: blog.url,
+    }, user))
+    event.target.disabled = false
+    if(error) {
+      // TODO: handle error here
     }
   }
 
