@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 import blogServices from 'services/blogs'
+import { SUCCESS, setNotification } from './notificationReducer'
 
 const initialState = /** @type {Blog[]} */ ([])
 
@@ -19,8 +20,8 @@ const blogsReducer = createSlice({
     },
     /** @param {{payload: string, type: string}} action  */
     deleteBlog(state, action) {
-      return state.filter(blog => blog.id !== action.payload)
-    }
+      return state.filter((blog) => blog.id !== action.payload)
+    },
   },
 })
 
@@ -58,6 +59,12 @@ export const addBlog = (blogObject, user) => {
       }
       newBlog.user = injectUser
       dispatch(appendBlogs(newBlog))
+      dispatch(
+        setNotification({
+          message: `a new blog ${newBlog.title} by ${newBlog.author} added`,
+          type: SUCCESS,
+        })
+      )
     } catch (error) {
       return error
     }
