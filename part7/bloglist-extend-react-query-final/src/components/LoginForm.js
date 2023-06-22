@@ -1,17 +1,17 @@
 import { useState } from 'react'
 import loginService from './../services/login'
 import blogsService from './../services/blogs'
-import { ERROR } from './Notification'
 import PropTypes from 'prop-types'
+import { NotificationTypes, displayNotificationCurried, useNotificationDispatch } from 'contexts/NotificationContext'
 
 /**
  * @typedef Props
  * @property {React.Dispatch<React.SetStateAction<null>>} setUser
- * @property {import("../App").DisplayEvent} displayNotification
  * */
 
 /** @param {Props} props */
-const LoginForm = ({ setUser, displayNotification }) => {
+const LoginForm = ({ setUser }) => {
+  const displayNotification = displayNotificationCurried(useNotificationDispatch())
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -29,8 +29,10 @@ const LoginForm = ({ setUser, displayNotification }) => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      // TODO: add exception later
-      displayNotification('wrong username or password', ERROR)
+      displayNotification({
+        type: NotificationTypes.ERROR,
+        message:'wrong username or password'
+      })
     }
   }
 

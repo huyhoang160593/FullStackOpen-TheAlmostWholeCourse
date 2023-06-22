@@ -1,23 +1,18 @@
-/**
- * @typedef Props
- * @property {string} type
- * @property {string} message
- */
+import { NotificationTypes, useNotificationValue } from 'contexts/NotificationContext'
 
-export const { ERROR, SUCCESS } = {
-  ERROR: 'ERROR',
-  SUCCESS: 'SUCCESS',
-}
-
-/** @param {Props} props */
-const Notification = ({ type = SUCCESS, message }) => {
-  if (message === null) {
+const Notification = () => {
+  const messageObject = useNotificationValue()
+  if (!messageObject.message) {
     return null
   }
-  if (type === SUCCESS) {
-    return <div className="notification">{message}</div>
+  switch (messageObject.type) {
+    case NotificationTypes.SUCCESS:
+      return <div className="notification">{messageObject.message}</div>
+    case NotificationTypes.ERROR:
+      return <div className="notification error">{messageObject.message}</div>
+    default:
+      return null
   }
-  return <div className="notification error">{message}</div>
 }
 
 export default Notification
