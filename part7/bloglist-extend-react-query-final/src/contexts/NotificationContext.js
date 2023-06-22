@@ -62,7 +62,7 @@ export const useNotificationDispatch = () => {
   return useContext(NotificationContext)[1]
 }
 
-/** @param {import('react').Dispatch<Actions>} dispatch */
+/** @param {React.Dispatch<Actions>} dispatch */
 export const displayNotificationCurried = (dispatch) => {
   /**
    * @param {State} messageObject
