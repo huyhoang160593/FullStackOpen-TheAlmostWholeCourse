@@ -6,35 +6,13 @@ import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
-import {
-  NotificationTypes,
-  displayNotificationCurried,
-  useNotificationDispatch,
-} from 'contexts/NotificationContext'
-
-/**
- * @callback DisplayEvent
- * @param {string} message
- * @param {string} [type="SUCCESS"]
- * @param {number} [timeout]
- * @returns {void}
- */
+import { useQuery } from 'react-query'
+import { queryKeys } from 'misc/queryKeys'
 
 const App = () => {
-  const displayNotification = displayNotificationCurried(
-    useNotificationDispatch()
-  )
-  const [blogs, setBlogs] = useState(
-    /** @type {import('./components/Blog').Blog[]} */ ([])
-  )
   const [user, setUser] = useState(null)
   /** @type {import('react').MutableRefObject<import('./components/Togglable').ImperativeObject>} */
   const blogFormToggleRef = useRef()
-
-  useEffect(() => {
-    if (!user) return
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [user])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
@@ -52,38 +30,33 @@ const App = () => {
     setUser(null)
   }
 
-  const createBlogHandle = async (newBlogData) => {
-    const newBlog = await blogService.create(newBlogData)
-    const injectUser = {
-      id: newBlog.user,
-      name: user.name,
-      username: user.username,
-    }
-    newBlog.user = injectUser
-    setBlogs(blogs.concat(newBlog))
-    displayNotification({
-      type: NotificationTypes.SUCCESS,
-      message: `a new blog ${newBlog.title} by ${newBlog.author} added`,
-    })
+  const updateBlogHandle = (_updatedBlog) => {
+    // TODO: make update viable later
+    // const injectUser = {
+    //   id: updatedBlog.user,
+    //   name: user.name,
+    //   username: user.username,
+    // }
+    // updatedBlog.user = injectUser
+    // setBlogs(
+    //   blogs.map((currentBlog) =>
+    //     currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog
+    //   )
+    // )
   }
 
-  const updateBlogHandle = (updatedBlog) => {
-    const injectUser = {
-      id: updatedBlog.user,
-      name: user.name,
-      username: user.username,
-    }
-    updatedBlog.user = injectUser
-    setBlogs(
-      blogs.map((currentBlog) =>
-        currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog
-      )
-    )
+  const deleteBlogHandle = (_deletedBlog) => {
+    // TODO: make delete blog viable later
+    // setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id))
   }
 
-  const deleteBlogHandle = (deletedBlog) => {
-    setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id))
-  }
+  const result = useQuery(queryKeys.blogs, blogService.getAll, {
+    retry: false,
+    enabled: !!user
+  })
+
+  /** @type {Blog[]} */
+  const blogs = result.data
 
   return (
     <div>
@@ -106,12 +79,12 @@ const App = () => {
           <h2>create new</h2>
           <Togglable buttonLabel="new blog" ref={blogFormToggleRef}>
             <CreateBlogForm
-              createBlogHandle={createBlogHandle}
+              user={user}
               toggleVisibility={blogFormToggleRef.current?.toggleVisibility}
             />
           </Togglable>
 
-          {blogs
+          {blogs && blogs.concat()
             .sort((a, b) => b.likes - a.likes)
             .map((blog) => (
               <Blog

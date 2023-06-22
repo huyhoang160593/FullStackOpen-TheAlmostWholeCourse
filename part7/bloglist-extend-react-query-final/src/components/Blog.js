@@ -2,23 +2,6 @@ import { useState } from 'react'
 import blogsServices from '../services/blogs'
 
 /**
- * @typedef {Object} User
- * @property {string} id
- * @property {string} name
- * @property {string} username
- * */
-
-/**
- * @typedef {Object} Blog
- * @property {string} id
- * @property {string} title
- * @property {string} author
- * @property {string} url
- * @property {number} likes
- * @property {User} user
- */
-
-/**
  * @typedef {Object} Props
  * @property {Blog} blog
  * @property {User} user
