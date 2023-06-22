@@ -30,26 +30,6 @@ const App = () => {
     setUser(null)
   }
 
-  const updateBlogHandle = (_updatedBlog) => {
-    // TODO: make update viable later
-    // const injectUser = {
-    //   id: updatedBlog.user,
-    //   name: user.name,
-    //   username: user.username,
-    // }
-    // updatedBlog.user = injectUser
-    // setBlogs(
-    //   blogs.map((currentBlog) =>
-    //     currentBlog.id !== updatedBlog.id ? currentBlog : updatedBlog
-    //   )
-    // )
-  }
-
-  const deleteBlogHandle = (_deletedBlog) => {
-    // TODO: make delete blog viable later
-    // setBlogs(blogs.filter((currentBlog) => currentBlog.id !== deletedBlog.id))
-  }
-
   const result = useQuery(queryKeys.blogs, blogService.getAll, {
     retry: false,
     enabled: !!user
@@ -91,8 +71,6 @@ const App = () => {
                 user={user}
                 key={blog.id}
                 blog={blog}
-                updateBlogList={updateBlogHandle}
-                deleteBlogList={deleteBlogHandle}
               />
             ))}
         </>
