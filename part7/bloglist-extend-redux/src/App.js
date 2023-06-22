@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
-import blogService from './services/blogs'
 
 import LoginForm from './components/LoginForm'
 import CreateBlogForm from './components/CreateBlogForm'
@@ -8,36 +7,32 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useAppDispatch, useAppSelector } from 'store.js'
 import { fetchBlogs } from 'reducers/blogsReducers'
+import { logout, receiveUserFromLocalStorage } from 'reducers/userReducers'
 
 const App = () => {
   const blogs = useAppSelector((state) =>
     state.blogs.concat().sort((a, b) => b.likes - a.likes)
   )
+  const user = useAppSelector((state) => state.user)
+
   const dispatch = useAppDispatch()
-  const [user, setUser] = useState(null)
 
   /** @type {import('react').MutableRefObject<import('./components/Togglable').ImperativeObject>} */
   const blogFormToggleRef = useRef()
+  useEffect(() => {
+    if (user) return
+    dispatch(receiveUserFromLocalStorage())
+  }, [])
 
   useEffect(() => {
     if (!user) return
     dispatch(fetchBlogs())
   }, [user])
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
-  }, [])
-
   /** @type {React.MouseEventHandler<HTMLButtonElement>} */
   const handleLogout = (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
+    dispatch(logout())
   }
 
   return (
@@ -46,7 +41,7 @@ const App = () => {
         <>
           <h2>log in to application</h2>
           <Notification />
-          <LoginForm setUser={setUser} />
+          <LoginForm />
         </>
       )}
       {user && (
@@ -61,13 +56,12 @@ const App = () => {
           <h2>create new</h2>
           <Togglable buttonLabel="new blog" ref={blogFormToggleRef}>
             <CreateBlogForm
-              user={user}
               toggleVisibility={blogFormToggleRef.current?.toggleVisibility}
             />
           </Togglable>
 
           {blogs.map((blog) => (
-            <Blog user={user} key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} />
           ))}
         </>
       )}

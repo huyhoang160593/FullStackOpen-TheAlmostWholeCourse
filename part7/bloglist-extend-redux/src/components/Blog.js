@@ -1,16 +1,16 @@
 import { useState } from 'react'
-import { useAppDispatch } from 'store.js'
+import { useAppDispatch, useAppSelector } from 'store.js'
 import { changeBlog, removeBlog } from 'reducers/blogsReducers'
 
 /**
  * @typedef {Object} Props
  * @property {Blog} blog
- * @property {User} user
  * */
 
 /** @param {Props} props */
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const dispatch = useAppDispatch()
+  const user = useAppSelector((state) => state.user)
   const [toggle, setToggle] = useState(false)
   /** @type {import('react').CSSProperties} */
   const blogStyle = {
@@ -25,14 +25,16 @@ const Blog = ({ blog, user }) => {
     event.preventDefault()
     event.currentTarget.disabled = true
 
-    const error = await dispatch(changeBlog(blog.id, {
-      likes: blog.likes + 1,
-      author: blog.author,
-      title: blog.title,
-      url: blog.url,
-    }, user))
+    const error = await dispatch(
+      changeBlog(blog.id, {
+        likes: blog.likes + 1,
+        author: blog.author,
+        title: blog.title,
+        url: blog.url,
+      })
+    )
     event.target.disabled = false
-    if(error) {
+    if (error) {
       // TODO: handle error here
     }
   }
@@ -42,14 +44,14 @@ const Blog = ({ blog, user }) => {
     event.preventDefault()
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       const error = dispatch(removeBlog(blog.id))
-      if(error) {
+      if (error) {
         // TODO: handle error here
       }
     }
   }
 
   return (
-    <div aria-label='blogContainer' style={blogStyle}>
+    <div aria-label="blogContainer" style={blogStyle}>
       <section aria-label="blogTitleAuthor">
         {blog.title} {blog.author}
         <button onClick={() => setToggle(!toggle)}>
@@ -58,18 +60,21 @@ const Blog = ({ blog, user }) => {
       </section>
       {toggle && (
         <>
-          <section aria-label='blogURL'>{blog.url}</section>
-          <section aria-label='blogLikes'>
+          <section aria-label="blogURL">{blog.url}</section>
+          <section aria-label="blogLikes">
             {blog.likes}
-            <button name='LikeButton' onClick={onLikesClickHandle}>likes</button>
+            <button name="LikeButton" onClick={onLikesClickHandle}>
+              likes
+            </button>
           </section>
-          <section aria-label='blogUserName'>{blog.user.name}</section>
+          <section aria-label="blogUserName">{blog.user.name}</section>
           <button
-            name='RemoveButton'
+            name="RemoveButton"
             style={{
               backgroundColor: 'blue',
               color: 'white',
-              visibility: blog.user.username === user?.username ? 'visible' : 'hidden'
+              visibility:
+                blog.user.username === user.username ? 'visible' : 'hidden',
             }}
             onClick={onRemoveBlogHandle}
           >

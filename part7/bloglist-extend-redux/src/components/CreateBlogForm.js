@@ -4,12 +4,11 @@ import { useAppDispatch } from 'store.js'
 
 /**
  * @typedef {Object} Props
- * @property {User} user
  * @property {import("./Togglable").ImperativeObject['toggleVisibility']} [toggleVisibility]
  */
 
 /** @param {Props} props */
-const CreateBlogForm = ({ toggleVisibility, user }) => {
+const CreateBlogForm = ({ toggleVisibility }) => {
   const dispatch = useAppDispatch()
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
@@ -18,7 +17,7 @@ const CreateBlogForm = ({ toggleVisibility, user }) => {
   /** @type {React.FormEventHandler<HTMLFormElement>} */
   const handleCreateBlog = async (event) => {
     event.preventDefault()
-    await dispatch(addBlog({ title, author, url }, user))
+    await dispatch(addBlog({ title, author, url }))
     setTitle('')
     setAuthor('')
     setUrl('')

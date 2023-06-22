@@ -8,6 +8,10 @@ const blogsReducer = createSlice({
   name: 'blogs',
   initialState,
   reducers: {
+    /** @param {{payload: Blog[], type: string}} action  */
+    initBlogs(_state, action) {
+      return action.payload
+    },
     /** @param {{payload: Blog | Blog[], type: string}} action  */
     appendBlogs(state, action) {
       return state.concat(action.payload)
@@ -25,7 +29,7 @@ const blogsReducer = createSlice({
   },
 })
 
-const { appendBlogs, updateBlog, deleteBlog } = blogsReducer.actions
+const { initBlogs, appendBlogs, updateBlog, deleteBlog } = blogsReducer.actions
 
 /** All Thunk Actions */
 
@@ -36,7 +40,7 @@ export const fetchBlogs = () => {
   return async (dispatch) => {
     try {
       const blogs = await blogServices.getAll()
-      dispatch(appendBlogs(blogs))
+      dispatch(initBlogs(blogs))
     } catch (error) {
       return error
     }
@@ -45,12 +49,12 @@ export const fetchBlogs = () => {
 
 /**
  * @param {Pick<Blog, 'author' | 'title' | 'url'>} blogObject
- * @param {User} user
  * @returns {import("@reduxjs/toolkit").ThunkAction<Promise<void | any>, import('store.js').RootState, unknown, import('@reduxjs/toolkit').AnyAction>}
  */
-export const addBlog = (blogObject, user) => {
-  return async (dispatch) => {
+export const addBlog = (blogObject) => {
+  return async (dispatch, getState) => {
     try {
+      const user = getState().user
       const newBlog = await blogServices.create(blogObject)
       const injectUser = {
         id: newBlog.user,
@@ -74,12 +78,12 @@ export const addBlog = (blogObject, user) => {
 /**
  * @param {string} blogId
  * @param {Pick<Blog, 'author' | 'title' | 'url' | 'likes'>} blogObject
- * @param {User} user
  * @returns {import("@reduxjs/toolkit").ThunkAction<Promise<void | any>, import('store.js').RootState, unknown, import('@reduxjs/toolkit').AnyAction>}
  */
-export const changeBlog = (blogId, blogObject, user) => {
-  return async (dispatch) => {
+export const changeBlog = (blogId, blogObject) => {
+  return async (dispatch, getState) => {
     try {
+      const user = getState().user
       const updatedBlog = await blogServices.put(blogId, blogObject)
       const injectUser = {
         id: updatedBlog.user,
