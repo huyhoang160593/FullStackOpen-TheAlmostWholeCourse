@@ -6,7 +6,7 @@ import { queryKeys } from 'misc/queryKeys'
 /**
  * @typedef {Object} Props
  * @property {Blog} blog
- * @property {User} user
+ * @property {LoginUser} user
  * */
 
 /** @param {Props} props */

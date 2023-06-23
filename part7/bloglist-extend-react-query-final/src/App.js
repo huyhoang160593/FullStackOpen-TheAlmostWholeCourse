@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 
@@ -8,26 +8,24 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { useQuery } from 'react-query'
 import { queryKeys } from 'misc/queryKeys'
+import { getUserFromStorageCurried, logoutCurried, useLoginUserDispatch, useLoginUserValue } from 'contexts/LoginUserContext'
 
 const App = () => {
-  const [user, setUser] = useState(null)
+  const user = useLoginUserValue()
+  const dispatch = useLoginUserDispatch()
   /** @type {import('react').MutableRefObject<import('./components/Togglable').ImperativeObject>} */
   const blogFormToggleRef = useRef()
+  const getUserFromStorage = getUserFromStorageCurried(dispatch)
+  const logoutApp = logoutCurried(dispatch)
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogUser')
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON)
-      setUser(user)
-      blogService.setToken(user.token)
-    }
+    getUserFromStorage()
   }, [])
 
   /** @type {React.MouseEventHandler<HTMLButtonElement>} */
   const handleLogout = (event) => {
     event.preventDefault()
-    window.localStorage.removeItem('loggedBlogUser')
-    setUser(null)
+    logoutApp()
   }
 
   const result = useQuery(queryKeys.blogs, blogService.getAll, {
@@ -44,7 +42,7 @@ const App = () => {
         <>
           <h2>log in to application</h2>
           <Notification />
-          <LoginForm setUser={setUser} />
+          <LoginForm />
         </>
       )}
       {user && (

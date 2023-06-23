@@ -6,7 +6,7 @@ export const NotificationTypes = /** @type {const} */({
 })
 /** @typedef {typeof NotificationTypes} NotificationTypes */
 
-export const ActionTypes = /** @type {const} */ ({
+const ActionTypes = /** @type {const} */ ({
   DISPLAY_NOTIFICATION: 'DISPLAY_NOTIFICATION',
   REMOVE_NOTIFICATION: 'REMOVE_NOTIFICATION',
 })
