@@ -5,5 +5,5 @@
  * @property {string} author
  * @property {string} url
  * @property {number} likes
- * @property {User} user
+ * @property {Omit<User, 'blogs'>} [user]
  */

@@ -9,7 +9,7 @@ const login = async (credential) => {
 }
 
 const getAllUsers = async () => {
-  const response = await axios.post(baseUserUrl)
+  const response = await axios.get(baseUserUrl)
   return response.data
 }
 

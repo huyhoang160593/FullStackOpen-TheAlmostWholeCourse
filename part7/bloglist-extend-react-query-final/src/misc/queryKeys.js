@@ -1,3 +1,4 @@
 export const queryKeys = /** @type {const} */({
-  blogs: 'blogs'
+  blogs: 'blogs',
+  users: 'users'
 })
