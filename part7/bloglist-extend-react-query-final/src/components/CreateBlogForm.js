@@ -1,3 +1,4 @@
+import { useLoginUserValue } from 'contexts/LoginUserContext'
 import {
   NotificationTypes,
   displayNotificationCurried,
@@ -10,12 +11,12 @@ import blogsServices from 'services/blogs'
 
 /**
  * @typedef {Object} Props
- * @property {LoginUser} user
  * @property {() => void} [toggleVisibility]
  */
 
 /** @param {Props} props */
-const CreateBlogForm = ({ toggleVisibility, user }) => {
+const CreateBlogForm = ({ toggleVisibility }) => {
+  const user = useLoginUserValue()
   const queryClient = useQueryClient()
   const createBlogMutation = useMutation(blogsServices.create)
   const displayNotification = displayNotificationCurried(

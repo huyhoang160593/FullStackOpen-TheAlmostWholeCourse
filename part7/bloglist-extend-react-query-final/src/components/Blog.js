@@ -2,15 +2,16 @@ import { useState } from 'react'
 import blogsServices from '../services/blogs'
 import { useQueryClient, useMutation } from 'react-query'
 import { queryKeys } from 'misc/queryKeys'
+import { useLoginUserValue } from 'contexts/LoginUserContext'
 
 /**
  * @typedef {Object} Props
  * @property {Blog} blog
- * @property {LoginUser} user
  * */
 
 /** @param {Props} props */
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
+  const user = useLoginUserValue()
   const queryClient = useQueryClient()
   /** @type {import('react-query').UseMutationResult<any, unknown, [string, Pick<Blog, 'author' | 'likes' | "title" | "url">], unknown>} */
   const updateBlogMutation = useMutation((variables) =>
