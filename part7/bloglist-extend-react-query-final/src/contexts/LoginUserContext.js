@@ -1,7 +1,7 @@
 import { localStorageKeys } from 'misc/localStorageKeys'
 import { createContext, useContext, useReducer } from 'react'
 import blogsServices from 'services/blogs'
-import loginService from 'services/login'
+import userServices from 'services/users'
 
 export const ActionTypes = /** @type {const} */ ({
   APPEND_USER: 'APPEND_USER',
@@ -58,7 +58,7 @@ export const loginToBlogCurried = (dispatch) => {
   return async (credential) => {
     try {
       /** @type {LoginUser} */
-      const user = await loginService.login(credential)
+      const user = await userServices.login(credential)
       dispatch({
         type: ActionTypes.APPEND_USER,
         payload: user,

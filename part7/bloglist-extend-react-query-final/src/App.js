@@ -10,6 +10,7 @@ import {
 import { Routes } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 import { IndexPage } from 'components/pages/IndexPage'
+import { UsersPage } from 'components/pages/UsersPage'
 
 const App = () => {
   const user = useLoginUserValue()
@@ -45,6 +46,7 @@ const App = () => {
         {user.username} logged in <button onClick={handleLogout}>logout</button>
       </p>
       <Routes>
+        <Route path="/users" element={<UsersPage />} />
         <Route path="/" element={<IndexPage />} />
       </Routes>
     </>
