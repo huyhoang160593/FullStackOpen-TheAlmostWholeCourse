@@ -14,6 +14,7 @@ const getAll = () => {
       Authorization: token
     }
   }
+  /** @type {Promise<import('axios').AxiosResponse<Blog[]>>} */
   const request = axios.get(baseUrl, config)
   return request.then(response => response.data)
 }
