@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import PropTypes from 'prop-types'
 import {
   NotificationTypes,
   displayNotificationCurried,
@@ -57,11 +56,6 @@ const LoginForm = () => {
       </button>
     </form>
   )
-}
-
-LoginForm.propTypes = {
-  setUser: PropTypes.func.isRequired,
-  displayNotification: PropTypes.func.isRequired,
 }
 
 export default LoginForm

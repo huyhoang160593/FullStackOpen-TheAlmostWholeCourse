@@ -1,5 +1,7 @@
 import { queryKeys } from 'misc/queryKeys'
+import { routerPaths } from 'misc/router'
 import { useQuery } from 'react-query'
+import { Link } from 'react-router-dom'
 import userServices from 'services/users'
 
 export function UsersPage() {
@@ -22,7 +24,7 @@ export function UsersPage() {
         <tbody>
           {users.map((user) => (
             <tr key={user.id}>
-              <td>{user.name}</td>
+              <td><Link to={`${routerPaths.USERS}/${user.id}`} >{user.name}</Link></td>
               <td>{user.blogs.length}</td>
             </tr>
           ))}
