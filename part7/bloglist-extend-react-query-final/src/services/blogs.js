@@ -3,7 +3,7 @@ const baseUrl = '/api/blogs'
 
 let token = null
 
-const setToken = newToken => {
+const setToken = (newToken) => {
   token = `Bearer ${newToken}`
 }
 
@@ -11,20 +11,20 @@ const getAll = () => {
   /** @type {import('axios').RawAxiosRequestConfig<any>} */
   const config = {
     headers: {
-      Authorization: token
-    }
+      Authorization: token,
+    },
   }
   /** @type {Promise<import('axios').AxiosResponse<Blog[]>>} */
   const request = axios.get(baseUrl, config)
-  return request.then(response => response.data)
+  return request.then((response) => response.data)
 }
 
 const create = async (newObject) => {
   /** @type {import('axios').RawAxiosRequestConfig<any>} */
   const config = {
     headers: {
-      Authorization: token
-    }
+      Authorization: token,
+    },
   }
   const response = await axios.post(baseUrl, newObject, config)
   return response.data
@@ -34,8 +34,8 @@ const put = async (id, newObject) => {
   /** @type {import('axios').RawAxiosRequestConfig<any>} */
   const config = {
     headers: {
-      Authorization: token
-    }
+      Authorization: token,
+    },
   }
 
   const response = await axios.put(`${baseUrl}/${id}`, newObject, config)
@@ -46,11 +46,32 @@ const deleteItem = async (id) => {
   /** @type {import('axios').RawAxiosRequestConfig<any>} */
   const config = {
     headers: {
-      Authorization: token
-    }
+      Authorization: token,
+    },
   }
   await axios.delete(`${baseUrl}/${id}`, config)
 }
 
-const blogsServices = { getAll, create, setToken, put, deleteItem }
+/**
+ * @param {string} blogId
+ * @param {Pick<BlogComment, 'content'>} commentObject
+ */
+const addCommentToBlog = async (blogId, commentObject) => {
+  /** @type {import('axios').RawAxiosRequestConfig<any>} */
+  const config = {
+    headers: {
+      Authorization: token,
+    },
+  }
+
+  /** @type {import('axios').AxiosResponse<RawBlog>} */
+  const response = await axios.post(
+    `${baseUrl}/${blogId}/comment`,
+    commentObject,
+    config
+  )
+  return response.data
+}
+
+const blogsServices = { getAll, create, setToken, put, deleteItem, addCommentToBlog }
 export default blogsServices

@@ -25,6 +25,11 @@ export function BlogDetailPage({ blog }) {
     { mutationKey: [mutationKeys.updateBlog] }
   )
 
+  /** @type {import('react-query').UseMutationResult<RawBlog, unknown, [string, Pick<BlogComment, 'content'>], unknown>} */
+  const addCommentToBlogMutation = useMutation((variables) =>
+    blogsServices.addCommentToBlog(...variables)
+  )
+
   const deleteBlogMutation = useMutation(blogsServices.deleteItem)
   /** @type {React.MouseEventHandler<HTMLButtonElement>} */
   const onLikesClickHandle = async (event) => {
@@ -77,6 +82,38 @@ export function BlogDetailPage({ blog }) {
     }
   }
 
+  /**
+   * @param {React.FormEvent<HTMLFormElement>} event
+   */
+  function onAddCommentSubmitHandle(event) {
+    event.preventDefault()
+    const formData = new FormData(event.currentTarget)
+    const commentObject = /** @type {Pick<BlogComment, 'content'>} */ (
+      Object.fromEntries(formData.entries())
+    )
+    addCommentToBlogMutation.mutate([blog.id, commentObject], {
+      onSuccess: (rawUpdatedBlog) => {
+        const injectUser = {
+          id: rawUpdatedBlog.user,
+          name: user.name,
+          username: user.username,
+        }
+        const updatedBlog = /** @type {Blog}*/ ({
+          ...rawUpdatedBlog,
+          user: injectUser,
+        })
+        /** @type {Blog[]} */
+        const blogs = queryClient.getQueryData(queryKeys.blogs)
+        queryClient.setQueryData(
+          queryKeys.blogs,
+          blogs.map((currentBlog) =>
+            currentBlog.id === updatedBlog.id ? updatedBlog : currentBlog
+          )
+        )
+      },
+    })
+  }
+
   return (
     <>
       <h2>{blog.title}</h2>
@@ -103,8 +140,14 @@ export function BlogDetailPage({ blog }) {
         remove
       </button>
       <h2>comments</h2>
+      <form onSubmit={onAddCommentSubmitHandle}>
+        <input type="text" name="content" id="content" />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
-        {blog.comment.map(item => (<li key={item._id}>{item.content}</li>))}
+        {blog.comment.map((item) => (
+          <li key={item._id}>{item.content}</li>
+        ))}
       </ul>
     </>
   )
