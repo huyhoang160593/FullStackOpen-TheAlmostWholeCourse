@@ -6,4 +6,5 @@
  * @property {string} url
  * @property {number} likes
  * @property {Omit<User, 'blogs'>} [user]
+ * @property {BlogComment[]} comment
  */

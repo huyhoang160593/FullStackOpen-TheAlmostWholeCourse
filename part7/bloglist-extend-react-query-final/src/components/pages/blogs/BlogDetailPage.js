@@ -102,6 +102,10 @@ export function BlogDetailPage({ blog }) {
       >
         remove
       </button>
+      <h2>comments</h2>
+      <ul>
+        {blog.comment.map(item => (<li key={item._id}>{item.content}</li>))}
+      </ul>
     </>
   )
 }

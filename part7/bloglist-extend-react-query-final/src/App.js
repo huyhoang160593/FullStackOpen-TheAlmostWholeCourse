@@ -13,10 +13,10 @@ import { useQueryClient } from 'react-query'
 import { queryKeys } from 'misc/queryKeys'
 import { routerPaths } from 'misc/router'
 import { UserDetailPage } from 'components/pages/users/UserDetailPage'
-import { BlogDetailPage } from 'components/pages/users/BlogDetailPage'
 import { useQuery } from 'react-query'
 import blogsServices from 'services/blogs'
 import { Header } from 'components/Header'
+import { BlogDetailPage } from 'components/pages/blogs/BlogDetailPage'
 
 const App = () => {
   const queryClient = useQueryClient()
