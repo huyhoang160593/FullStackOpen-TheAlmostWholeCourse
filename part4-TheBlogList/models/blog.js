@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+const commentSubSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
+  content: String,
+});
+
 const blogSchema = new mongoose.Schema({
   title: {
     type: String,
@@ -16,6 +23,9 @@ const blogSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
+  },
+  comment: {
+    type: [commentSubSchema],
   },
 });
 
