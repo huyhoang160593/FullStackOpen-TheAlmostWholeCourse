@@ -7,7 +7,7 @@ import { Navigate } from 'react-router-dom'
  */
 
 /** @param {Props} props */
-export function UserDetail({ user }) {
+export function UserDetailPage({ user }) {
   if (!user) return <Navigate to={routerPaths.USERS} />
   return (
     <section>

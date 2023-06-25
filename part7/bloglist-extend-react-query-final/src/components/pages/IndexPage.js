@@ -1,24 +1,17 @@
 import { useRef } from 'react'
 import Blog from '../Blog'
-import blogService from '../../services/blogs'
 import CreateBlogForm from '../CreateBlogForm'
 import Togglable from '../Togglable'
-import { useQuery } from 'react-query'
-import { queryKeys } from 'misc/queryKeys'
-import { useLoginUserValue } from 'contexts/LoginUserContext'
 
-export function IndexPage() {
-  const user = useLoginUserValue()
+/**
+ * @typedef {Object} Props
+ * @property {Blog[]} blogs
+ * */
 
+/** @param {Props} props */
+export function IndexPage({ blogs }) {
   /** @type {import('react').MutableRefObject<import('../Togglable').ImperativeObject>} */
   const blogFormToggleRef = useRef()
-
-  const result = useQuery(queryKeys.blogs, blogService.getAll, {
-    retry: false,
-    enabled: !!user,
-  })
-  /** @type {Blog[]} */
-  const blogs = result.data
   return (
     <>
       <h2>create new</h2>
