@@ -1,10 +1,7 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import {
-  getUserFromStorageCurried,
-  logoutCurried,
-  useLoginUserDispatch,
   useLoginUserValue,
 } from 'contexts/LoginUserContext'
 import { Routes } from 'react-router-dom'
@@ -19,14 +16,11 @@ import { UserDetailPage } from 'components/pages/users/UserDetailPage'
 import { BlogDetailPage } from 'components/pages/users/BlogDetailPage'
 import { useQuery } from 'react-query'
 import blogsServices from 'services/blogs'
+import { Header } from 'components/Header'
 
 const App = () => {
   const queryClient = useQueryClient()
-
   const user = useLoginUserValue()
-  const dispatch = useLoginUserDispatch()
-  const getUserFromStorage = getUserFromStorageCurried(dispatch)
-  const logoutApp = logoutCurried(dispatch)
 
   const { data } = useQuery(queryKeys.blogs, blogsServices.getAll, {
     retry: false,
@@ -38,16 +32,6 @@ const App = () => {
 
   const blogDetailMatch = useMatch(routerPaths.BLOG_DETAIL)
   const blogDetail = useMemo(() => getDetailBlogGuard(), [blogDetailMatch, data])
-
-  useEffect(() => {
-    getUserFromStorage()
-  }, [])
-
-  /** @type {React.MouseEventHandler<HTMLButtonElement>} */
-  const handleLogout = (event) => {
-    event.preventDefault()
-    logoutApp()
-  }
 
   function getDetailUserGuard () {
     /** @type {User[]} */
@@ -79,11 +63,9 @@ const App = () => {
 
   return (
     <>
-      <h2>blogs</h2>
+      <Header user={user} />
+      <h2>blog app</h2>
       <Notification />
-      <p>
-        {user.username} logged in <button onClick={handleLogout}>logout</button>
-      </p>
       <Routes>
         <Route path={routerPaths.BLOG_DETAIL} element={<BlogDetailPage blog={blogDetail} />} />
         <Route path={routerPaths.USER_DETAIL} element={<UserDetailPage user={userDetail} />} />
