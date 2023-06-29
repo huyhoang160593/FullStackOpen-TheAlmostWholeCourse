@@ -11,7 +11,7 @@ import blogsServices from 'services/blogs'
 
 /**
  * @typedef {Object} Props
- * @property {() => void} [toggleVisibility]
+ * @property {import('./Togglable').ImperativeObject['toggleVisibility']} [toggleVisibility]
  */
 
 /** @param {Props} props */
@@ -47,7 +47,7 @@ const CreateBlogForm = ({ toggleVisibility }) => {
             type: NotificationTypes.SUCCESS,
             message: `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
           })
-          toggleVisibility()
+          toggleVisibility(false)
         },
       }
     )
@@ -57,37 +57,55 @@ const CreateBlogForm = ({ toggleVisibility }) => {
     setUrl('')
   }
   return (
-    <form onSubmit={handleCreateBlog}>
-      <div>
-        title:
+    <form onSubmit={handleCreateBlog} className='flex flex-col gap-4'>
+      <fieldset>
+        <label htmlFor="title" className='label'>
+          <span className='label-text'>title</span>
+        </label>
         <input
           type="text"
-          name="Title"
+          id='title'
+          name="title"
+          className='input input-bordered'
           value={title}
           onChange={({ target }) => setTitle(target.value)}
         />
-      </div>
-      <div>
-        author:
+      </fieldset>
+      <fieldset>
+        <label htmlFor="author" className='label'>
+          <span className='label-text'>author</span>
+        </label>
         <input
           type="text"
-          name="Author"
+          id='author'
+          name="author"
+          className='input input-bordered'
           value={author}
           onChange={({ target }) => setAuthor(target.value)}
         />
-      </div>
-      <div>
-        url:
+      </fieldset>
+      <fieldset>
+        <label htmlFor="url" className='label'>
+          <span className='label-text'>url</span>
+        </label>
         <input
           type="text"
-          name="Url"
+          id='url'
+          name="url"
+          className='input input-bordered'
           value={url}
           onChange={({ target }) => setUrl(target.value)}
         />
-      </div>
-      <button name="createButton" type="submit">
-        create
-      </button>
+      </fieldset>
+      <fieldset className='flex gap-2'>
+        <button className='btn btn-success' type="submit">
+          create
+        </button>
+        <button type='button' className='btn btn-outline btn-secondary' onClick={(event) => {
+          event.preventDefault()
+          toggleVisibility(false)
+        }}>cancel</button>
+      </fieldset>
     </form>
   )
 }

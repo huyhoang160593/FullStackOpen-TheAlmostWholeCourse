@@ -1,7 +1,9 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
 import {
+  getUserFromStorageCurried,
+  useLoginUserDispatch,
   useLoginUserValue,
 } from 'contexts/LoginUserContext'
 import { Routes } from 'react-router-dom'
@@ -20,7 +22,13 @@ import { BlogDetailPage } from 'components/pages/blogs/BlogDetailPage'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const dispatch = useLoginUserDispatch()
+  const getUserFromStorage = getUserFromStorageCurried(dispatch)
   const user = useLoginUserValue()
+
+  useEffect(() => {
+    getUserFromStorage()
+  }, [])
 
   const { data } = useQuery(queryKeys.blogs, blogsServices.getAll, {
     retry: false,
@@ -66,9 +74,8 @@ const App = () => {
   }
 
   return (
-    <>
+    <main className='h-screen bg-base-100'>
       <Header user={user} />
-      <h2>blog app</h2>
       <Notification />
       <Routes>
         <Route path={routerPaths.BLOG_DETAIL} element={<BlogDetailPage blog={blogDetail} />} />
@@ -76,7 +83,7 @@ const App = () => {
         <Route path={routerPaths.USERS} element={<UsersPage />} />
         <Route path={routerPaths.INDEX} element={<IndexPage blogs={data} />} />
       </Routes>
-    </>
+    </main>
   )
 }
 

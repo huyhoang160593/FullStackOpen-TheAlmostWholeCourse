@@ -90,9 +90,6 @@ export const getUserFromStorageCurried = (dispatch) => {
     const loggedUserJSON = window.localStorage.getItem(
       localStorageKeys.LOGGER_BLOG_USER
     )
-    if (!loggedUserJSON) {
-      return
-    }
     const user = /** @type {LoginUser} */ (JSON.parse(loggedUserJSON))
     dispatch({
       type: ActionTypes.APPEND_USER,

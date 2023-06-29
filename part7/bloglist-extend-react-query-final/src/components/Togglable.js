@@ -1,45 +1,49 @@
+import clsx from 'clsx'
 import { forwardRef, useImperativeHandle, useState } from 'react'
 
 /**
  * @typedef {Object} Props
  * @property {string} buttonLabel
+ * @property {boolean} [hiddenCancel]
  * */
 
 /**
- * @typedef {Object} ImperativeObject
- * @property {() => void} toggleVisibility
- */
+  * @typedef {{ toggleVisibility: (forceState: boolean) => void}} ImperativeObject
+  */
 
 /**
  * @param {import('react').PropsWithChildren<Props>} props
  * @param {import('react').ForwardedRef<ImperativeObject>} refs
  * */
-const Togglable = ({ children, buttonLabel }, refs) => {
+const Togglable = ({ children, buttonLabel, hiddenCancel = false }, refs) => {
   const [visible, setVisible] = useState(false)
 
-  const hideWhenVisible = { display: visible ? 'none' : '' }
-  const showWhenVisible = { display: visible ? '' : 'none' }
-
-  const toggleVisibility = () => {
-    setVisible(!visible)
+  /**
+   * @param {boolean} [forceState]
+   */
+  const toggleVisibility = (forceState) => {
+    setVisible(forceState ?? !visible)
   }
 
-  useImperativeHandle(refs, () => {
+  function initImperative() {
     return {
       toggleVisibility
     }
-  })
+  }
+
+
+  useImperativeHandle(refs, initImperative)
 
   return (
-    <div>
-      <div style={hideWhenVisible}>
-        <button onClick={toggleVisibility}>{buttonLabel}</button>
-      </div>
-      <div style={showWhenVisible}>
+    <>
+      <section className={clsx({ ['hidden']: visible })}>
+        <button className='btn btn-outline btn-primary' onClick={() => toggleVisibility()}>{buttonLabel}</button>
+      </section>
+      <section className={clsx({ ['hidden']: !visible })}>
         {children}
-        <button onClick={toggleVisibility}>cancel</button>
-      </div>
-    </div>
+        {!hiddenCancel && <button className='btn btn-outline btn-secondary mt-2' onClick={() => toggleVisibility()}>cancel</button>}
+      </section>
+    </>
   )
 }
 
