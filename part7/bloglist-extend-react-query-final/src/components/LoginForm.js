@@ -32,28 +32,38 @@ const LoginForm = () => {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
+    <form onSubmit={handleLogin} className='flex flex-col gap-4'>
+      <fieldset className='form-control'>
+        <label htmlFor="username" className='label'>
+          <span className='label-text'>username</span>
+        </label>
         <input
           type="text"
-          name="Username"
+          id="username"
+          name="username"
+          className='input input-bordered w-full max-w-xs'
           value={username}
           onChange={({ target }) => setUsername(target.value)}
         />
-      </div>
-      <div>
-        password
+      </fieldset>
+      <fieldset className='form-control'>
+        <label htmlFor="password" className='label'>
+          <span className='label-text'>password</span>
+        </label>
         <input
           type="password"
-          name="Password"
+          id="password"
+          name="password"
+          className='input input-bordered w-full max-w-xs'
           value={password}
           onChange={({ target }) => setPassword(target.value)}
         />
-      </div>
-      <button name="LoginButton" type="submit">
-        login
-      </button>
+      </fieldset>
+      <fieldset className='card-actions justify-center'>
+        <button className='btn btn-primary' name="LoginButton" type="submit">
+          login
+        </button>
+      </fieldset>
     </form>
   )
 }

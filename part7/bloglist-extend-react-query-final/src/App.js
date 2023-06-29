@@ -53,11 +53,15 @@ const App = () => {
 
   if (!user) {
     return (
-      <>
-        <h2>log in to application</h2>
-        <Notification />
-        <LoginForm />
-      </>
+      <main className='w-screen h-screen bg-base-100 flex items-center'>
+        <section className='card w-96 mx-auto shadow-xl'>
+          <div className='card-body'>
+            <h2 className='card-title'>log in to application</h2>
+            <Notification />
+            <LoginForm />
+          </div>
+        </section>
+      </main>
     )
   }
 

@@ -1,8 +1,10 @@
 import { createContext, useContext, useReducer } from 'react'
 
 export const NotificationTypes = /** @type {const} */({
-  ERROR: 'ERROR',
+  INFO: 'INFO',
   SUCCESS: 'SUCCESS',
+  WARNING: 'WARNING',
+  ERROR: 'ERROR',
 })
 /** @typedef {typeof NotificationTypes} NotificationTypes */
 
