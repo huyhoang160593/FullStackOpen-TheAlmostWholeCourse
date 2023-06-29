@@ -11,11 +11,11 @@ import blogsServices from 'services/blogs'
 
 /**
  * @typedef {Object} Props
- * @property {import('./Togglable').ImperativeObject['toggleVisibility']} [toggleVisibility]
+ * @property {React.MutableRefObject<import('./Togglable').ImperativeObject>} [toggleRef]
  */
 
 /** @param {Props} props */
-const CreateBlogForm = ({ toggleVisibility }) => {
+const CreateBlogForm = ({ toggleRef }) => {
   const user = useLoginUserValue()
   const queryClient = useQueryClient()
   const createBlogMutation = useMutation(blogsServices.create)
@@ -47,7 +47,7 @@ const CreateBlogForm = ({ toggleVisibility }) => {
             type: NotificationTypes.SUCCESS,
             message: `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
           })
-          toggleVisibility(false)
+          if(toggleRef.current) toggleRef.current.toggleVisibility(false)
         },
       }
     )
@@ -103,7 +103,8 @@ const CreateBlogForm = ({ toggleVisibility }) => {
         </button>
         <button type='button' className='btn btn-outline btn-secondary' onClick={(event) => {
           event.preventDefault()
-          toggleVisibility(false)
+          console.log(toggleRef.current)
+          if(toggleRef.current) toggleRef.current.toggleVisibility(false)
         }}>cancel</button>
       </fieldset>
     </form>

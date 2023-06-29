@@ -33,6 +33,7 @@ const App = () => {
   const { data } = useQuery(queryKeys.blogs, blogsServices.getAll, {
     retry: false,
     enabled: !!user,
+    refetchOnWindowFocus: false
   })
 
   const userDetailMatch = useMatch(routerPaths.USER_DETAIL)
@@ -77,12 +78,14 @@ const App = () => {
     <main className='h-screen bg-base-100'>
       <Header user={user} />
       <Notification />
-      <Routes>
-        <Route path={routerPaths.BLOG_DETAIL} element={<BlogDetailPage blog={blogDetail} />} />
-        <Route path={routerPaths.USER_DETAIL} element={<UserDetailPage user={userDetail} />} />
-        <Route path={routerPaths.USERS} element={<UsersPage />} />
-        <Route path={routerPaths.INDEX} element={<IndexPage blogs={data} />} />
-      </Routes>
+      <section className='mx-4 lg:mx-40 xl:mx-80'>
+        <Routes>
+          <Route path={routerPaths.BLOG_DETAIL} element={<BlogDetailPage blog={blogDetail} />} />
+          <Route path={routerPaths.USER_DETAIL} element={<UserDetailPage user={userDetail} />} />
+          <Route path={routerPaths.USERS} element={<UsersPage />} />
+          <Route path={routerPaths.INDEX} element={<IndexPage blogs={data} />} />
+        </Routes>
+      </section>
     </main>
   )
 }

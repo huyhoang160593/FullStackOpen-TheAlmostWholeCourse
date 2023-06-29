@@ -13,7 +13,7 @@ export function UsersPage() {
   const users = result.data
   return (
     <>
-      <h2>Users</h2>
+      <h2 className='text-xl font-bold'>users</h2>
       <table>
         <thead>
           <tr>

@@ -10,22 +10,29 @@ import Togglable from '../Togglable'
 
 /** @param {Props} props */
 export function IndexPage({ blogs }) {
-  /** @type {import('react').MutableRefObject<import('../Togglable').ImperativeObject>} */
-  const blogFormToggleRef = useRef()
+  /** @type {React.MutableRefObject<import('../Togglable').ImperativeObject>} */
+  const blogFormToggleRef = useRef(null)
+  console.log(blogFormToggleRef)
   return (
-    <section className='mx-4 lg:mx-40 xl:mx-80'>
-      <h2 className='text-xl font-bold'>create new</h2>
-      <Togglable buttonLabel="new blog" ref={blogFormToggleRef} hiddenCancel={true}>
+    <>
+      <h2 className="text-xl font-bold">create new</h2>
+      <Togglable
+        buttonLabel="new blog"
+        ref={blogFormToggleRef}
+        hiddenCancel={true}
+      >
         <CreateBlogForm
-          toggleVisibility={blogFormToggleRef.current?.toggleVisibility}
+          toggleRef={blogFormToggleRef}
         />
       </Togglable>
       <div className="divider"></div>
-      {blogs &&
-        blogs
-          .concat()
-          .sort((a, b) => b.likes - a.likes)
-          .map((blog) => <Blog key={blog.id} blog={blog} />)}
-    </section>
+      <section className='flex flex-col gap-4'>
+        {blogs &&
+          blogs
+            .concat()
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => <Blog key={blog.id} blog={blog} />)}
+      </section>
+    </>
   )
 }

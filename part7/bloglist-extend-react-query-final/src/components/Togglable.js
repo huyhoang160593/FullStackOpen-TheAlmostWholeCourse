@@ -8,31 +8,31 @@ import { forwardRef, useImperativeHandle, useState } from 'react'
  * */
 
 /**
-  * @typedef {{ toggleVisibility: (forceState: boolean) => void}} ImperativeObject
+  * @typedef {{
+  *   toggleVisibility: (forceState?: boolean) => void
+  * }} ImperativeObject
   */
 
 /**
  * @param {import('react').PropsWithChildren<Props>} props
- * @param {import('react').ForwardedRef<ImperativeObject>} refs
+ * @param {import('react').ForwardedRef<ImperativeObject>} ref
  * */
-const Togglable = ({ children, buttonLabel, hiddenCancel = false }, refs) => {
+const Togglable = ({ children, buttonLabel, hiddenCancel = false }, ref) => {
   const [visible, setVisible] = useState(false)
 
-  /**
-   * @param {boolean} [forceState]
-   */
+  /** @type {ImperativeObject['toggleVisibility']} */
   const toggleVisibility = (forceState) => {
     setVisible(forceState ?? !visible)
   }
 
-  function initImperative() {
+  const initImperative = () => {
     return {
       toggleVisibility
     }
   }
 
 
-  useImperativeHandle(refs, initImperative)
+  useImperativeHandle(ref, initImperative, [])
 
   return (
     <>
