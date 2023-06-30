@@ -14,7 +14,7 @@ export function UsersPage() {
   return (
     <>
       <h2 className='text-xl font-bold'>users</h2>
-      <table>
+      <table className='table'>
         <thead>
           <tr>
             <th />
@@ -23,7 +23,7 @@ export function UsersPage() {
         </thead>
         <tbody>
           {users.map((user) => (
-            <tr key={user.id}>
+            <tr key={user.id} className='hover'>
               <td><Link to={`${routerPaths.USERS}/${user.id}`} >{user.name}</Link></td>
               <td>{user.blogs.length}</td>
             </tr>

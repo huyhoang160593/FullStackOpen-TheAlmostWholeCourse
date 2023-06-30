@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { useLoginUserValue } from 'contexts/LoginUserContext'
 import { mutationKeys } from 'misc/mutaionKeys'
 import { queryKeys } from 'misc/queryKeys'
@@ -91,6 +92,7 @@ export function BlogDetailPage({ blog }) {
     const commentObject = /** @type {Pick<BlogComment, 'content'>} */ (
       Object.fromEntries(formData.entries())
     )
+    event.currentTarget.reset()
     addCommentToBlogMutation.mutate([blog.id, commentObject], {
       onSuccess: (rawUpdatedBlog) => {
         const injectUser = {
@@ -115,40 +117,35 @@ export function BlogDetailPage({ blog }) {
   }
 
   return (
-    <>
+    <article className='prose'>
       <h2>{blog.title}</h2>
       <a href={blog.url} target="_blank" rel="noopener noreferrer">
         {blog.url}
       </a>
-      <section aria-label="blogLikes">
+      <section className='text-info'>
         {blog.likes}
-        <button name="LikeButton" onClick={onLikesClickHandle}>
+        <button className='btn btn-accent btn-xs' onClick={onLikesClickHandle}>
           likes
         </button>
       </section>
-      <section aria-label="blogUserName">{blog.user.name}</section>
+      <section className='italic'>{blog.user.name}</section>
       <button
-        name="RemoveButton"
-        style={{
-          backgroundColor: 'blue',
-          color: 'white',
-          visibility:
-            blog.user.username === user.username ? 'visible' : 'hidden',
-        }}
+        className={clsx('btn btn-outline btn-warning btn-md',{ ['invisible']: blog.user.username !== user.username })}
         onClick={onRemoveBlogHandle}
       >
         remove
       </button>
+      <div className='divider'></div>
       <h2>comments</h2>
-      <form onSubmit={onAddCommentSubmitHandle}>
-        <input type="text" name="content" id="content" />
-        <button type="submit">add comment</button>
+      <form className='flex gap-4' onSubmit={onAddCommentSubmitHandle}>
+        <input className='input input-bordered input-accent' type="text" name="content" id="content" />
+        <button className='btn glass' type="submit">add comment</button>
       </form>
       <ul>
         {blog.comment.map((item) => (
           <li key={item._id}>{item.content}</li>
         ))}
       </ul>
-    </>
+    </article>
   )
 }

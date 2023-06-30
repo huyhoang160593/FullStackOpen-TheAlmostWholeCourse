@@ -10,7 +10,7 @@ import { Navigate } from 'react-router-dom'
 export function UserDetailPage({ user }) {
   if (!user) return <Navigate to={routerPaths.USERS} />
   return (
-    <section>
+    <article className='prose'>
       <h2>{user.name}</h2>
       <h3>added blogs</h3>
       <ul>
@@ -18,6 +18,6 @@ export function UserDetailPage({ user }) {
           <li key={blog.id}>{blog.title}</li>
         ))}
       </ul>
-    </section>
+    </article>
   )
 }
