@@ -15,8 +15,16 @@ const Authors = (props) => {
   const onUpdateAuthorHandle = useCallback(
   /** @type {React.FormEventHandler<HTMLFormElement>} */((event) => {
     event.preventDefault()
+    /** @type {NodeListOf<HTMLInputElement & HTMLSelectElement>} */
+    const allInputElement = event.currentTarget.querySelectorAll('[name]')
+
     const formData = new FormData(event.currentTarget)
     const updateAuthorVariables = /** @type {Record<keyof EditAuthorVariables, string>} */ (Object.fromEntries(formData.entries()))
+
+    for(const element of allInputElement) {
+      element.value = ''
+    }
+
     updateAuthor({variables: {
       name: updateAuthorVariables.name,
       setBornTo: Number(updateAuthorVariables.setBornTo)
@@ -53,7 +61,11 @@ const Authors = (props) => {
         <form onSubmit={onUpdateAuthorHandle}>
           <fieldset>
             <legend>Update author</legend>
-            <label htmlFor="name">name</label><input id="name" name="name" type="text" />
+            <label htmlFor="name">name</label>
+            <select name="name" id="name">
+              <option value="">-</option>
+              {authors.map(author=> (<option key={author.name} value={author.name}>{author.name}</option>))}
+            </select>
             <br />
             <label htmlFor="setBornTo">born</label><input id="setBornTo" name="setBornTo" type="number" />
             <br />
