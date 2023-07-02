@@ -15,15 +15,11 @@ const Authors = (props) => {
   const onUpdateAuthorHandle = useCallback(
   /** @type {React.FormEventHandler<HTMLFormElement>} */((event) => {
     event.preventDefault()
-    /** @type {NodeListOf<HTMLInputElement & HTMLSelectElement>} */
-    const allInputElement = event.currentTarget.querySelectorAll('[name]')
 
     const formData = new FormData(event.currentTarget)
     const updateAuthorVariables = /** @type {Record<keyof EditAuthorVariables, string>} */ (Object.fromEntries(formData.entries()))
 
-    for(const element of allInputElement) {
-      element.value = ''
-    }
+    event.currentTarget.reset()
 
     updateAuthor({variables: {
       name: updateAuthorVariables.name,
@@ -68,6 +64,13 @@ const Authors = (props) => {
             </select>
             <br />
             <label htmlFor="setBornTo">born</label><input id="setBornTo" name="setBornTo" type="number" />
+            <br />
+            <input type="checkbox" name="testing" id="testing" value={'conmatday'} />hello
+            <input type="checkbox" name="testing" id="testing" value={'conbuoi'} />hello
+            <input type="checkbox" name="testing" id="testing" value={'conloz'} />hello
+            <input type="radio" name='fuckyou' id='fuckyou' value={'thanglon'} />
+            <input type="radio" name='fuckyou' id='fuckyou' value={'thangbuoi'} />
+            <input type="radio" name='fuckyou' id='fuckyou' value={'thangsucvat'} />
             <br />
             <button type="submit">update author</button>
           </fieldset>
