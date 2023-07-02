@@ -151,7 +151,7 @@ const resolvers = {
       const book = {...args, id: uuid() }
       books = books.concat(book)
       if (authors.findIndex(author => author.name === book.author) === -1) {
-        authors = authors.concat({ name: book.author })
+        authors = authors.concat({ name: book.author, id: uuid() })
       }
       return book
     },
