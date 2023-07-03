@@ -65,13 +65,6 @@ const Authors = (props) => {
             <br />
             <label htmlFor="setBornTo">born</label><input id="setBornTo" name="setBornTo" type="number" />
             <br />
-            <input type="checkbox" name="testing" id="testing" value={'conmatday'} />hello
-            <input type="checkbox" name="testing" id="testing" value={'conbuoi'} />hello
-            <input type="checkbox" name="testing" id="testing" value={'conloz'} />hello
-            <input type="radio" name='fuckyou' id='fuckyou' value={'thanglon'} />
-            <input type="radio" name='fuckyou' id='fuckyou' value={'thangbuoi'} />
-            <input type="radio" name='fuckyou' id='fuckyou' value={'thangsucvat'} />
-            <br />
             <button type="submit">update author</button>
           </fieldset>
         </form>
