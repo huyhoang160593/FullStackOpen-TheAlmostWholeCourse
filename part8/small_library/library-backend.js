@@ -1,6 +1,12 @@
 const { v1: uuid } = require('uuid')
 const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
+const { PORT, MONGODB_URI } = require('./utilities/config');
+const { default: mongoose } = require('mongoose');
+const Book = require('./models/Book');
+const Author = require('./models/Author');
+const { GraphQLError } = require('graphql');
+mongoose.set('strictQuery', false)
 
 let authors = [
   {
@@ -98,35 +104,42 @@ let books = [
   you can remove the placeholder query once your first own has been implemented
 */
 
+mongoose.connect(MONGODB_URI)
+  .then(() => {
+    console.log('connected to MongoDB')
+  }).catch((error) => {
+    console.log('error connection to MongoDB', error.message)
+  })
+
 const typeDefs = `#graphql
   type Book {
     title:     String!
     published: Int!
-    author:    String!
+    author:    Author!
     id:        ID!
     genres:    [String!]!
   }
   type Author {
-    id: String!
-    name: String!
-    born: String
+    id:        String!
+    name:      String!
+    born:      String
     bookCount: Int
   }
   type Query {
-    bookCount: Int
-    authorCount: Int
+    bookCount:                               Int
+    authorCount:                             Int
     allBooks(author: String, genre: String): [Book!]!
-    allAuthors: [Author!]!
+    allAuthors:                              [Author!]!
   }
   type Mutation {
     addBook(
-      title: String!
-      author: String!
+      title:     String!
+      author:    String!
       published: Int!
-      genres: [String!]
+      genres:    [String!]
     ): Book
     editAuthor(
-      name: String!
+      name:      String!
       setBornTo: Int!
     ): Author
   }
@@ -147,11 +160,43 @@ const resolvers = {
       books.filter((book) => book.author === root.name).length,
   },
   Mutation: {
-    addBook: (_root, args) => {
-      const book = {...args, id: uuid() }
-      books = books.concat(book)
-      if (authors.findIndex(author => author.name === book.author) === -1) {
-        authors = authors.concat({ name: book.author, id: uuid() })
+    /**
+     * @param {{
+     *  title:     string,
+     *  author:    string,
+     *  published: number
+     *  genres:    string[]
+     * }} args
+     * */
+    addBook: async (_root, args) => {
+      let existAuthor = await Author.findOne({
+        name: args.author
+      })
+      if (!existAuthor) {
+        existAuthor = new Author({name: args.author})
+        try {
+          await existAuthor.save()
+        } catch (error) {
+          throw new GraphQLError('Create Author failed', {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              invalidArgs: args.author,
+              error
+            }
+          })
+        }
+      }
+      const book = new Book({...args, author: existAuthor})
+      try {
+        await book.save()
+      } catch (error) {
+        throw new GraphQLError('The book is not unique', {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.title,
+            error
+          }
+        })
       }
       return book
     },
@@ -174,7 +219,7 @@ const server = new ApolloServer({
 });
 
 startStandaloneServer(server, {
-  listen: { port: 4000 },
+  listen: { port: PORT },
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
