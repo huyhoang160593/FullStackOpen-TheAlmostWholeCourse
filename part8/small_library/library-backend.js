@@ -1,4 +1,4 @@
-const { v1: uuid } = require('uuid')
+const { v1: uuid } = require('uuid');
 const { ApolloServer } = require('@apollo/server');
 const { startStandaloneServer } = require('@apollo/server/standalone');
 const { PORT, MONGODB_URI } = require('./utilities/config');
@@ -6,7 +6,7 @@ const { default: mongoose } = require('mongoose');
 const Book = require('./models/Book');
 const Author = require('./models/Author');
 const { GraphQLError } = require('graphql');
-mongoose.set('strictQuery', false)
+mongoose.set('strictQuery', false);
 
 let authors = [
   {
@@ -104,12 +104,14 @@ let books = [
   you can remove the placeholder query once your first own has been implemented
 */
 
-mongoose.connect(MONGODB_URI)
+mongoose
+  .connect(MONGODB_URI)
   .then(() => {
-    console.log('connected to MongoDB')
-  }).catch((error) => {
-    console.log('error connection to MongoDB', error.message)
+    console.log('connected to MongoDB');
   })
+  .catch((error) => {
+    console.log('error connection to MongoDB', error.message);
+  });
 
 const typeDefs = `#graphql
   type Book {
@@ -147,13 +149,27 @@ const typeDefs = `#graphql
 
 const resolvers = {
   Query: {
-    bookCount: () => books.length,
-    authorCount: () => authors.length,
-    allBooks: (_root, { author, genre }) =>
-      books
-        .filter((book) => (author ? book.author === author : true))
-        .filter((book) => (genre ? book.genres.includes(genre) : true)),
-    allAuthors: () => authors,
+    bookCount: async () => Book.countDocuments({}),
+    authorCount: async () => Author.countDocuments({}),
+    // TODO: fix this
+    /**
+     * @param {*} _root
+     * @param {{author: string?, genre: string?}} args
+     */
+    allBooks: async (_root, { author, genre }) => {
+      if (author) {
+        const existAuthor = await Author.findOne({name: author})
+        if(!existAuthor) return []
+        return Book.find({
+          author: existAuthor._id,
+          ...(genre && { genres: genre }),
+        }).populate('author', { name: 1, born: 1 })
+      }
+      return Book.find({
+        ...(genre && { genres: genre }),
+      }).populate('author', { name: 1, born: 1 });
+    },
+    allAuthors: async () => Author.find({}),
   },
   Author: {
     bookCount: (root) =>
@@ -170,47 +186,49 @@ const resolvers = {
      * */
     addBook: async (_root, args) => {
       let existAuthor = await Author.findOne({
-        name: args.author
-      })
+        name: args.author,
+      });
       if (!existAuthor) {
-        existAuthor = new Author({name: args.author})
+        existAuthor = new Author({ name: args.author });
         try {
-          await existAuthor.save()
+          await existAuthor.save();
         } catch (error) {
           throw new GraphQLError('Create Author failed', {
             extensions: {
-              code: "BAD_USER_INPUT",
+              code: 'BAD_USER_INPUT',
               invalidArgs: args.author,
-              error
-            }
-          })
+              error,
+            },
+          });
         }
       }
-      const book = new Book({...args, author: existAuthor})
+      const book = new Book({ ...args, author: existAuthor });
       try {
-        await book.save()
+        await book.save();
       } catch (error) {
-        throw new GraphQLError('The book is not unique', {
+        throw new GraphQLError('Create Book failed', {
           extensions: {
-            code: "BAD_USER_INPUT",
-            invalidArgs: args.title,
-            error
-          }
-        })
+            code: 'BAD_USER_INPUT',
+            error,
+          },
+        });
       }
-      return book
+      return book;
     },
-    editAuthor: (_root, args) => {
-      const author = authors.find(author => author.name === args.name)
-      if(!author) return null
-      const authorUpdated = {
-        ...author,
-        born: args.setBornTo
-      }
-      authors = authors.map(author => author.name === authorUpdated.name ? authorUpdated : author)
-      return authorUpdated
-    }
-  }
+    /**
+     * @param {{
+     *  name: string,
+     *  setBornTo: number
+     * }} args
+     * */
+    editAuthor: async (_root, args) => {
+      return Author.findOneAndUpdate(
+        { name: args.name },
+        { born: args.setBornTo },
+        { new: true, runValidators: true, context: 'query' }
+      );
+    },
+  },
 };
 
 const server = new ApolloServer({
