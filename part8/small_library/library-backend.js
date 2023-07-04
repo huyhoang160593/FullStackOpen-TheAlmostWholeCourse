@@ -193,7 +193,7 @@ const resolvers = {
         try {
           await existAuthor.save();
         } catch (error) {
-          throw new GraphQLError('Create Author failed', {
+          throw new GraphQLError('Create non-exist Author failed', {
             extensions: {
               code: 'BAD_USER_INPUT',
               invalidArgs: args.author,
