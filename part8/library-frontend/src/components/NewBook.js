@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client';
-import { ADD_BOOK } from 'apollo/mutaions';
+import { ADD_BOOK } from 'apollo/mutations';
 import { ALL_AUTHOR, ALL_BOOKS } from 'apollo/queries';
 import { useState } from 'react';
 
 const NewBook = (props) => {
-  /** @type {import('@apollo/client').MutationTuple<any, import('apollo/mutaions').AddBookVariables>} */
+  /** @type {import('@apollo/client').MutationTuple<any, import('apollo/mutations').AddBookVariables>} */
   const [addBook] = useMutation(ADD_BOOK, {
     refetchQueries: [{query: ALL_BOOKS}, { query: ALL_AUTHOR }]
   });

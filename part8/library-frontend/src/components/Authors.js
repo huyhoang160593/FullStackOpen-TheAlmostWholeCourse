@@ -1,6 +1,6 @@
 import { useCallback } from "react"
 import { useMutation, useQuery } from "@apollo/client"
-import { EDIT_AUTHOR } from "apollo/mutaions"
+import { EDIT_AUTHOR } from "apollo/mutations"
 import { ALL_AUTHOR } from "apollo/queries"
 
 /** @typedef {import('apollo/mutaions').EditAuthorVariables} EditAuthorVariables */
