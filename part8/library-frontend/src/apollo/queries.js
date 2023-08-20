@@ -17,7 +17,7 @@ query AllAuthors {
 
 /**
  * @typedef {object} AllBooksResult
- * @property {Omit<Book, 'genres'>[]} allBooks
+ * @property {Book[]} allBooks
  */
 export const ALL_BOOKS = gql`
 query AllBooks {
