@@ -10,9 +10,10 @@ import { useCallback } from 'react';
  * @param {{
  *  show: boolean,
  *  setToken: React.Dispatch<React.SetStateAction<string>>
+ *  moveBackToFrontPage: () => void
  * }} props
  * */
-export default function LoginForm({setToken, show}) {
+export default function LoginForm({setToken, show, moveBackToFrontPage}) {
   /** @type {import('@apollo/client').MutationTuple<LoginResult, LoginVariables>} */
   const [login] = useMutation(LOGIN);
 
@@ -26,13 +27,20 @@ export default function LoginForm({setToken, show}) {
         );
 
         event.currentTarget.reset();
-        const result = await login({ variables: dataObject });
-        const token = result.data.login.value
-        localStorage.setItem(LocalStorageKeys.LIBRARY_USER_TOKEN, token)
-        setToken(token)
+        try {
+          const result = await login({ variables: dataObject });
+          const token = result.data.login.value
+          localStorage.setItem(LocalStorageKeys.LIBRARY_USER_TOKEN, token)
+          setToken(token)
+          if (typeof moveBackToFrontPage === 'function') {
+            moveBackToFrontPage()
+          }
+        } catch (error) {
+          alert(error)
+        }
       }
     ),
-    [login, setToken]
+    [login, moveBackToFrontPage, setToken]
   );
 
   if (!show) return null;

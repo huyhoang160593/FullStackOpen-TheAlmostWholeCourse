@@ -1,36 +1,51 @@
-import { useCallback } from "react"
-import { useMutation, useQuery } from "@apollo/client"
-import { EDIT_AUTHOR } from "apollo/mutations"
-import { ALL_AUTHOR } from "apollo/queries"
+import { useCallback } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import { EDIT_AUTHOR } from 'apollo/mutations';
+import { ALL_AUTHOR } from 'apollo/queries';
 
 /** @typedef {import('apollo/mutaions').EditAuthorVariables} EditAuthorVariables */
 
+/**
+ * @param {{
+ *  show: boolean,
+ *  token: string,
+ * }} props
+ * */
 const Authors = (props) => {
   /** @type {import('@apollo/client').QueryResult<import('apollo/queries').AllAuthorsResult>} */
-  const result = useQuery(ALL_AUTHOR)
+  const result = useQuery(ALL_AUTHOR);
 
   /** @type {import('@apollo/client').MutationTuple<any, EditAuthorVariables} */
-  const [updateAuthor] = useMutation(EDIT_AUTHOR)
+  const [updateAuthor] = useMutation(EDIT_AUTHOR);
 
   const onUpdateAuthorHandle = useCallback(
-  /** @type {React.FormEventHandler<HTMLFormElement>} */((event) => {
-    event.preventDefault()
+    /** @type {React.FormEventHandler<HTMLFormElement>} */ (
+      (event) => {
+        event.preventDefault();
 
-    const formData = new FormData(event.currentTarget)
-    const updateAuthorVariables = /** @type {Record<keyof EditAuthorVariables, string>} */ (Object.fromEntries(formData.entries()))
+        const formData = new FormData(event.currentTarget);
+        const updateAuthorVariables =
+          /** @type {Record<keyof EditAuthorVariables, string>} */ (
+            Object.fromEntries(formData.entries())
+          );
 
-    event.currentTarget.reset()
+        event.currentTarget.reset();
 
-    updateAuthor({variables: {
-      name: updateAuthorVariables.name,
-      setBornTo: Number(updateAuthorVariables.setBornTo)
-    }})
-  }),[updateAuthor])
+        updateAuthor({
+          variables: {
+            name: updateAuthorVariables.name,
+            setBornTo: Number(updateAuthorVariables.setBornTo),
+          },
+        });
+      }
+    ),
+    [updateAuthor]
+  );
 
   if (!props.show || result.loading) {
-    return null
+    return null;
   }
-  const authors = result.data.allAuthors
+  const authors = result.data.allAuthors;
   return (
     <div>
       <section>
@@ -52,25 +67,32 @@ const Authors = (props) => {
           </tbody>
         </table>
       </section>
-      <section>
-        <h2>Set birthyear</h2>
-        <form onSubmit={onUpdateAuthorHandle}>
-          <fieldset>
-            <legend>Update author</legend>
-            <label htmlFor="name">name</label>
-            <select name="name" id="name">
-              <option value="">-</option>
-              {authors.map(author=> (<option key={author.name} value={author.name}>{author.name}</option>))}
-            </select>
-            <br />
-            <label htmlFor="setBornTo">born</label><input id="setBornTo" name="setBornTo" type="number" />
-            <br />
-            <button type="submit">update author</button>
-          </fieldset>
-        </form>
-      </section>
+      {props.token && (
+        <section>
+          <h2>Set birthyear</h2>
+          <form onSubmit={onUpdateAuthorHandle}>
+            <fieldset>
+              <legend>Update author</legend>
+              <label htmlFor="name">name</label>
+              <select name="name" id="name">
+                <option value="">-</option>
+                {authors.map((author) => (
+                  <option key={author.name} value={author.name}>
+                    {author.name}
+                  </option>
+                ))}
+              </select>
+              <br />
+              <label htmlFor="setBornTo">born</label>
+              <input id="setBornTo" name="setBornTo" type="number" />
+              <br />
+              <button type="submit">update author</button>
+            </fieldset>
+          </form>
+        </section>
+      )}
     </div>
-  )
-}
+  );
+};
 
-export default Authors
+export default Authors;

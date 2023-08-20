@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
@@ -15,6 +15,10 @@ const App = () => {
   const [page, setPage] = useState(
     /** @type {PageState} */ (PageRoutes.AUTHORS)
   );
+
+  const handleBackToFrontPage = useCallback(() => {
+    setPage(PageRoutes.BOOKS)
+  }, [])
 
   useEffect(() => {
     const token = localStorage.getItem(LocalStorageKeys.LIBRARY_USER_TOKEN);
@@ -44,13 +48,13 @@ const App = () => {
         )}
       </div>
 
-      <Authors show={page === PageRoutes.AUTHORS} />
+      <Authors show={page === PageRoutes.AUTHORS} token={token} />
 
       <Books show={page === PageRoutes.BOOKS} />
 
       <NewBook show={page === PageRoutes.ADD} />
 
-      <LoginForm show={page === PageRoutes.LOGIN} setToken={setToken} />
+      <LoginForm show={page === PageRoutes.LOGIN} setToken={setToken} moveBackToFrontPage={handleBackToFrontPage}/>
     </div>
   );
 };
