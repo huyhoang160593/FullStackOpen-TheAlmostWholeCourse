@@ -2,5 +2,6 @@ export const PageRoutes = /** @type {const} */ ({
   AUTHORS: "authors",
   BOOKS: "books",
   ADD: "add",
-  LOGIN: "login"
+  LOGIN: "login",
+  RECOMMEND:"recommend",
 })

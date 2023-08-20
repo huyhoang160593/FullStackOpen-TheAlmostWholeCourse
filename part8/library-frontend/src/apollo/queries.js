@@ -1,9 +1,5 @@
 import { gql } from "@apollo/client";
 
-/**
- * @typedef {object} AllAuthorsResult
- * @property {Author[]} allAuthors
- */
 
 export const ALL_AUTHOR = gql`
 query AllAuthors {
@@ -14,14 +10,20 @@ query AllAuthors {
     bookCount
   }
 }`
+/**
+ * @typedef {object} AllAuthorsResult
+ * @property {Author[]} allAuthors
+ */
 
 /**
- * @typedef {object} AllBooksResult
- * @property {Book[]} allBooks
+ * @typedef {{
+ *  author?: string,
+ *  genre?: string
+ * }} AllBooksVariables
  */
 export const ALL_BOOKS = gql`
-query AllBooks {
-  allBooks {
+query AllBooks($author: String, $genre: String) {
+  allBooks(author: $author, genre: $genre) {
     title
     published
     author {
@@ -33,4 +35,23 @@ query AllBooks {
     id
     genres
   }
-}`
+}
+`
+/**
+ * @typedef {object} AllBooksResult
+ * @property {Book[]} allBooks
+ */
+
+export const ME = gql`
+query Me {
+  me {
+    username
+    favoriteGenre
+    id
+  }
+}
+`
+/**
+ * @typedef {object} MeResult
+ * @property {User} me
+ */

@@ -3,6 +3,7 @@ import Authors from './components/Authors';
 import Books from './components/Books';
 import NewBook from './components/NewBook';
 import LoginForm from 'components/LoginForm';
+import Recommend from 'components/Recommend';
 import { PageRoutes } from 'constants/pageRoutes';
 import { LocalStorageKeys } from 'constants/localStorageKeys';
 import { useApolloClient } from '@apollo/client';
@@ -28,8 +29,9 @@ const App = () => {
   return (
     <div>
       <div>
-        <button onClick={() => setPage(PageRoutes.AUTHORS)}>authors</button>
-        <button onClick={() => setPage(PageRoutes.BOOKS)}>books</button>
+        <button onClick={() => setPage(PageRoutes.AUTHORS)}>{PageRoutes.AUTHORS}</button>
+        <button onClick={() => setPage(PageRoutes.BOOKS)}>{PageRoutes.BOOKS}</button>
+        <button onClick={() => setPage(PageRoutes.RECOMMEND)}>{PageRoutes.RECOMMEND}</button>
         {token === null ? (
           <button onClick={() => setPage(PageRoutes.LOGIN)}>login</button>
         ) : (
@@ -53,6 +55,8 @@ const App = () => {
       <Books show={page === PageRoutes.BOOKS} />
 
       <NewBook show={page === PageRoutes.ADD} />
+
+      <Recommend show={page === PageRoutes.RECOMMEND} />
 
       <LoginForm show={page === PageRoutes.LOGIN} setToken={setToken} moveBackToFrontPage={handleBackToFrontPage}/>
     </div>

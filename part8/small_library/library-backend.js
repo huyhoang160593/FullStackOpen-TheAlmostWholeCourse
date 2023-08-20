@@ -93,8 +93,9 @@ const resolvers = {
     /**
      * @param {*} _root
      * @param {{author: string?, genre: string?}} args
+     * @param {{ currentUser?: User }} context
      */
-    allBooks: async (_root, { author, genre }) => {
+    allBooks: async (_root, { author, genre }, context) => {
       if (author) {
         const existAuthor = await Author.findOne({ name: author });
         if (!existAuthor) return [];
