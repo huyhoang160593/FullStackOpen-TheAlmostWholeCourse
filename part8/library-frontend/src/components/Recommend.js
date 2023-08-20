@@ -10,16 +10,19 @@ const Recommend = (props) => {
   /** @type {import('@apollo/client').QueryResult<MeResult>} */
   const { data: meData, loading: meLoading, error: meError } = useQuery(ME);
   /** @type {import('@apollo/client').LazyQueryResultTuple<AllBooksResult,AllBooksVariables>} */
-  const [getBook, { loading, error, data }] = useLazyQuery(ALL_BOOKS);
+  const [getBook, { loading, error, data }] = useLazyQuery(ALL_BOOKS, {
+    fetchPolicy:'no-cache'
+  });
 
   useEffect(() => {
+    if(!props.show) return
     if (!meData) return;
     getBook({
       variables: {
         genre: meData.me.favoriteGenre
       },
     });
-  }, [getBook, meData]);
+  }, [getBook, meData, props.show]);
 
   if (!props.show) return null;
   if (meLoading || loading) {
