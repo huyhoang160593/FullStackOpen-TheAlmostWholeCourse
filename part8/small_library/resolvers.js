@@ -1,11 +1,15 @@
 const { GraphQLError } = require("graphql");
+const { PubSub } = require('graphql-subscriptions')
+const { SECRET_PASSWORD, JWT_SECRET } = require("./utilities/config");
 const jwt = require('jsonwebtoken');
 const Author = require("./models/Author");
 const Book = require("./models/Book");
 const User = require("./models/User");
-const { SECRET_PASSWORD, JWT_SECRET } = require("./utilities/config");
+const { BOOK_ADDED } = require("./utilities/subscriptionKeys");
 
-const resolvers = {
+const pubSub = new PubSub()
+
+const resolvers = ({
   Query: {
     bookCount: async () => Book.countDocuments({}),
     authorCount: async () => Author.countDocuments({}),
@@ -80,6 +84,8 @@ const resolvers = {
           },
         });
       }
+
+      pubSub.publish(BOOK_ADDED, { bookAdded: book })
       return book;
     },
     /**
@@ -142,6 +148,11 @@ const resolvers = {
       return { value: jwt.sign(userForToken, JWT_SECRET) };
     },
   },
-};
+  Subscription: {
+    bookAdded: {
+      subscribe: () => pubSub.asyncIterator(BOOK_ADDED)
+    },
+  },
+});
 
 module.exports = resolvers
