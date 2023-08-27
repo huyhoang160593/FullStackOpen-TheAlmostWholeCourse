@@ -9,7 +9,7 @@ const { BOOK_ADDED } = require("./utilities/subscriptionKeys");
 
 const pubSub = new PubSub()
 
-const resolvers = ({
+const resolvers = /** @type {import("@graphql-tools/utils").IResolvers} */({
   Query: {
     bookCount: async () => Book.countDocuments({}),
     authorCount: async () => Author.countDocuments({}),
