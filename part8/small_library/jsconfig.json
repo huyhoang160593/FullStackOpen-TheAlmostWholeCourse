@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "checkJs": false,
+    "checkJs": true,
+    "module": "CommonJS",
     "resolveJsonModule": true,
     "moduleResolution": "node",
     "target": "es2020",
-    "module": "es2015"
   },
   "exclude": [
     "dist",
