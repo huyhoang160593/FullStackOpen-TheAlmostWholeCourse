@@ -6,7 +6,10 @@ import LoginForm from 'components/LoginForm';
 import Recommend from 'components/Recommend';
 import { PageRoutes } from 'constants/pageRoutes';
 import { LocalStorageKeys } from 'constants/localStorageKeys';
-import { useApolloClient } from '@apollo/client';
+import { useApolloClient, useSubscription } from '@apollo/client';
+import { BOOK_ADDED } from 'apollo/subscriptions';
+import { ALL_BOOKS } from 'apollo/queries';
+import { updateCache } from 'utilities/updateCache';
 
 /** @typedef {PageRoutes[keyof PageRoutes]} PageState */
 
@@ -17,9 +20,18 @@ const App = () => {
     /** @type {PageState} */ (PageRoutes.AUTHORS)
   );
 
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      const addedBook = /** @type {Book} */ (data.data.bookAdded);
+      window.alert(`${addedBook.title} is added to the library`);
+
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook);
+    },
+  });
+
   const handleBackToFrontPage = useCallback(() => {
-    setPage(PageRoutes.BOOKS)
-  }, [])
+    setPage(PageRoutes.BOOKS);
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem(LocalStorageKeys.LIBRARY_USER_TOKEN);
@@ -29,9 +41,15 @@ const App = () => {
   return (
     <div>
       <div>
-        <button onClick={() => setPage(PageRoutes.AUTHORS)}>{PageRoutes.AUTHORS}</button>
-        <button onClick={() => setPage(PageRoutes.BOOKS)}>{PageRoutes.BOOKS}</button>
-        <button onClick={() => setPage(PageRoutes.RECOMMEND)}>{PageRoutes.RECOMMEND}</button>
+        <button onClick={() => setPage(PageRoutes.AUTHORS)}>
+          {PageRoutes.AUTHORS}
+        </button>
+        <button onClick={() => setPage(PageRoutes.BOOKS)}>
+          {PageRoutes.BOOKS}
+        </button>
+        <button onClick={() => setPage(PageRoutes.RECOMMEND)}>
+          {PageRoutes.RECOMMEND}
+        </button>
         {token === null ? (
           <button onClick={() => setPage(PageRoutes.LOGIN)}>login</button>
         ) : (
@@ -58,7 +76,11 @@ const App = () => {
 
       <Recommend show={page === PageRoutes.RECOMMEND} />
 
-      <LoginForm show={page === PageRoutes.LOGIN} setToken={setToken} moveBackToFrontPage={handleBackToFrontPage}/>
+      <LoginForm
+        show={page === PageRoutes.LOGIN}
+        setToken={setToken}
+        moveBackToFrontPage={handleBackToFrontPage}
+      />
     </div>
   );
 };
