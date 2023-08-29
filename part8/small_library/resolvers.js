@@ -32,11 +32,14 @@ const resolvers = /** @type {import("@graphql-tools/utils").IResolvers} */({
         ...(genre && { genres: genre }),
       }).populate('author', { name: 1, born: 1 });
     },
-    allAuthors: async () => Author.find({}),
+    allAuthors: async () => {
+      const result = await Author.find({}).populate('books', { title: true })
+      return result
+    },
     me: (_root, _args, context) => context.currentUser,
   },
   Author: {
-    bookCount: (root) => 0,
+    bookCount: (root) => root.books.length,
   },
   Mutation: {
     /**
@@ -76,6 +79,11 @@ const resolvers = /** @type {import("@graphql-tools/utils").IResolvers} */({
       const book = new Book({ ...args, author: existAuthor });
       try {
         await book.save();
+        await existAuthor.updateOne({
+          $push: {
+            books: book
+          }
+        })
       } catch (error) {
         throw new GraphQLError('Create Book failed', {
           extensions: {

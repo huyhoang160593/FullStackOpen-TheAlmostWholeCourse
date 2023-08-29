@@ -19,6 +19,7 @@ const typeDefs = `#graphql
     name:      String!
     born:      String
     bookCount: Int
+    books:     [Book!]
   }
   type Query {
     bookCount:                               Int
