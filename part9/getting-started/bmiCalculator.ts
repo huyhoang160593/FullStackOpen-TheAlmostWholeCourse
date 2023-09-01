@@ -33,6 +33,6 @@ try {
   console.log(calculateBmi(height_in_cm, weight_in_kg))
 } catch (error) {
   if (error instanceof Error) {
-    console.error('Something bad happend. Cause: ', error.message)
+    console.error('Something bad happened. Cause: ', error.message)
   }
 }

@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "calculateBmi": "tsx bmiCalculator.ts"
+    "calculateBmi": "tsx bmiCalculator.ts",
+    "calculateExercises": "tsx exerciseCalculator.ts"
   },
   "keywords": [],
   "author": "",
