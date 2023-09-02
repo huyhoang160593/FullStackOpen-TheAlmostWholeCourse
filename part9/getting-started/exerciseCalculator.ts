@@ -17,7 +17,7 @@ function parseArguments(args: string[]): number[] {
   return numberParams.map((numberString) => Number(numberString));
 }
 
-function calculateExercises(target: number, weekParams: number[]): Result {
+export function calculateExercises(target: number, weekParams: number[]): Result {
   const periodLength = weekParams.length;
   const trainingDays = weekParams.filter((execDay) => execDay > 0).length;
   const average =

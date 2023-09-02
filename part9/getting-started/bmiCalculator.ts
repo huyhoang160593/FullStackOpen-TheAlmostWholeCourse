@@ -17,7 +17,7 @@ function parseArguments(args: string[]): BMIParams {
   }
 }
 
-function calculateBmi(height_in_cm: number, weight_in_kg: number): string {
+export function calculateBmi(height_in_cm: number, weight_in_kg: number): string {
   const result = weight_in_kg / Math.pow(height_in_cm / 100, 2);
   switch (true) {
     case result < 18.5:
