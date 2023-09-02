@@ -10,6 +10,7 @@ export interface Result {
 
 function parseArguments(args: string[]): number[] {
   const numberParams = args.slice(2);
+  if (numberParams.length === 0) throw new Error('Not enough arguments');
   const isAllParamsNumber = numberParams.every(
     (numberString) => !isNaN(Number(numberString))
   );
@@ -26,30 +27,30 @@ export function calculateExercises(target: number, weekParams: number[]): Result
   let rating = 0;
   let ratingDescription = '';
   if(trainingDays > periodLength / 2 ) {
-    rating++
+    rating++;
   }
   if (trainingDays === periodLength) {
-    rating++
+    rating++;
   }
   if (average - target > 1) {
-    rating++
+    rating++;
   }
   switch (rating) {
     case 0: {
       ratingDescription = 'You are bad';
-      break
+      break;
     }
     case 1: {
       ratingDescription = 'You need to try harder';
-      break
+      break;
     }
     case 2: {
       ratingDescription = 'Pretty good dude';
-      break
+      break;
     }
     default: {
       ratingDescription = 'You are legendary';
-      break
+      break;
     }
   }
 

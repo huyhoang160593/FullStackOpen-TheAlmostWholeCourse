@@ -1,36 +1,17 @@
 import express from 'express';
-import {
-  coerce,
-  nonNullish,
-  number,
-  object,
-  safeParse,
-} from 'valibot';
-import { isNotNaN } from './utilities/valibotExtendedPipeline';
+import { safeParse } from 'valibot';
 import { calculateBmi } from './bmiCalculator';
+import { BMISchema } from './schemas/queries';
+import { ExercisesSchema } from './schemas/bodies';
+import { calculateExercises } from './exerciseCalculator';
 
 const app = express();
-const BMIQuerySchema = object({
-  height: coerce(
-    nonNullish(
-      number('The height must be a number', [
-        isNotNaN('The height must be a number'),
-      ])
-    ),
-    (value) => Number(value)
-  ),
-  weight: coerce(
-    nonNullish(
-      number('The weight must be a number', [
-        isNotNaN('The weight must be a number'),
-      ])
-    ),
-    (value) => Number(value)
-  ),
-});
+
+app.use(express.json());
 
 app.get('/bmi', (req, res) => {
-  const parseResult = safeParse(BMIQuerySchema, req.query);
+  console.log(req.query);
+  const parseResult = safeParse(BMISchema, req.query);
   if (!parseResult.success) {
     // return res.status(400).json(flatten(parseResult.issues));
     return res.status(400).json({
@@ -39,6 +20,22 @@ app.get('/bmi', (req, res) => {
   }
   const { height, weight } = parseResult.output;
   return res.json(calculateBmi(height, weight));
+});
+
+app.post('/exercises', (req, res) => {
+  if (Object.keys(req.body as object).length < 2) {
+    return res.status(400).json({
+      error: 'parameters missing',
+    });
+  }
+  const parseResult = safeParse(ExercisesSchema, req.body);
+  if (!parseResult.success) {
+    return res.status(400).json({
+      error: 'malformatted parameters',
+    });
+  }
+  const { target, daily_exercises } = parseResult.output;
+  return res.json(calculateExercises(target, daily_exercises));
 });
 
 const PORT = 3002;
