@@ -1,13 +1,15 @@
 import express from 'express';
+import cors from 'cors';
+import rootRouter from './controllers/root';
+
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
-const PORT = 3000;
+app.use('/api', rootRouter);
 
-app.get('/ping', (_req, res) => {
-  console.log('someone pinged here');
-  res.send('pong');
-});
+const PORT = 3001;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
