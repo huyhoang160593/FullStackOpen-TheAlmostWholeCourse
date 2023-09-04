@@ -1,10 +1,15 @@
 import { Router } from "express";
+import diagnosesRouter from "./diagnoses";
+import patientsRouter from "./patients";
 
-const rootRouter = Router();
+const apiRouter = Router();
 
-rootRouter.get('/ping', (_req, res) => {
+apiRouter.get('/ping', (_req, res) => {
   console.log('someone pinged here');
   res.send('pong');
 });
 
-export default rootRouter;
+apiRouter.use(diagnosesRouter);
+apiRouter.use(patientsRouter);
+
+export default apiRouter;
