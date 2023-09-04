@@ -1,15 +1,22 @@
-export interface Patient {
+export enum Gender {
+  MALE = "male",
+  FEMALE = "female",
+  OTHER = "other"
+}
+export interface PatientEntry {
     id:          string;
     name:        string;
     dateOfBirth: string;
     ssn:         string;
-    gender:      "male" | "female" | "other";
+    gender:      Gender;
     occupation:  string;
 }
 
-export type NonSSNPatient = Omit<Patient, 'ssn'>;
+export type NonSSNPatient = Omit<PatientEntry, 'ssn'>;
 
-const data: Patient[] = [
+export type NewPatientEntry = Omit<PatientEntry, 'id'>;
+
+const data = [
     {
         "id": "d2773336-f723-11e9-8f0b-362b9e155667",
         "name": "John McClane",
@@ -50,6 +57,6 @@ const data: Patient[] = [
         "gender": "male",
         "occupation": "Digital evangelist"
     }
-];
+] as PatientEntry[];
 
 export default data;
