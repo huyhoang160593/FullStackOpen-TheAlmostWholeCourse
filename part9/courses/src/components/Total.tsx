@@ -1,4 +1,4 @@
-import { CoursePart } from '../models/CoursePart';
+import { CoursePart } from '../data/CoursePart';
 
 interface TotalProps {
   courseParts: CoursePart[];

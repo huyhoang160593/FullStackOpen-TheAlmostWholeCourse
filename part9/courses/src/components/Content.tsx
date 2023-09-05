@@ -1,15 +1,15 @@
-import { CoursePart } from '../models/CoursePart';
+import { CoursePart } from '../data/CoursePart';
+import { Part } from './Part';
 
 interface ContentProps {
   courseParts: CoursePart[];
 }
+
 export function Content({ courseParts }: ContentProps) {
   return (
     <>
       {courseParts.map((coursePart) => (
-        <p key={coursePart.name}>
-          {coursePart.name} {coursePart.exerciseCount}
-        </p>
+        <Part key={coursePart.name} coursePart={coursePart} />
       ))}
     </>
   );
