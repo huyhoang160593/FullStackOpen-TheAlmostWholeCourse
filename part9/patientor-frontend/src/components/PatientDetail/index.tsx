@@ -1,23 +1,9 @@
 import { Box, Typography } from '@mui/material';
-import { Gender, Patient } from '../../types';
-import { useEffect, useState } from 'react';
+import { Patient } from '../../types';
+import { Fragment, useEffect, useState } from 'react';
 import patientServices from '../../services/patients';
-import { Female, Male, Transgender } from '@mui/icons-material';
 import { useParams } from 'react-router-dom';
-
-interface PatientGenderProps {
-  gender: Gender;
-}
-export function PatientGender({ gender }: PatientGenderProps) {
-  switch (gender) {
-    case Gender.Male:
-      return <Male />;
-    case Gender.Female:
-      return <Female />;
-    default:
-      return <Transgender />;
-  }
-}
+import { PatientGender } from './PatientGender';
 
 interface Props {}
 export function PatientDetail(_props: Props) {
@@ -51,6 +37,26 @@ export function PatientDetail(_props: Props) {
       </Typography>
       <Typography variant="body1">ssh: {patient.ssn}</Typography>
       <Typography variant="body1">occupation: {patient.occupation}</Typography>
+
+      <Typography variant="h3" component={'h3'}>
+        entries
+      </Typography>
+      {patient.entries.map((entry) => (
+        <Fragment key={entry.id}>
+          <Typography variant="body1">
+            {entry.date}
+            &nbsp;<em>{entry.description}</em>
+          </Typography>
+          <Box component={'ul'}>
+            {Boolean(entry.diagnosisCodes) &&
+              entry.diagnosisCodes?.map((diagnosisCode) => (
+                <Box component={'li'} key={diagnosisCode}>
+                  {diagnosisCode}
+                </Box>
+              ))}
+          </Box>
+        </Fragment>
+      ))}
     </Box>
   );
 }
