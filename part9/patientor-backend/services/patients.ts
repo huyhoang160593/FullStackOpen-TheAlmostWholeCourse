@@ -6,13 +6,18 @@ export const getPatients = (): PatientEntry[] => {
   return patients;
 };
 
+export const getPatient = (patientId: string): PatientEntry | undefined => {
+  return patients.find(patient => patient.id === patientId);
+};
+
 export const getNonSSNPatients = (): NonSSNPatient[] => {
-  return patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+  return patients.map(({ id, name, dateOfBirth, gender, occupation, entries }) => ({
     id,
     name,
     dateOfBirth,
     gender,
     occupation,
+    entries
   }));
 };
 

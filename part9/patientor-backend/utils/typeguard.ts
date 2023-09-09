@@ -45,14 +45,15 @@ export function toNewPatientEntry(object: unknown): NewPatientEntry {
     'occupation' in object &&
     'ssn' in object
   ) {
-    const newEntry: NewPatientEntry = {
+    const newPatientEntry: NewPatientEntry = {
       name: parseString(object.name, 'name'),
       gender: parseGender(object.gender),
       dateOfBirth: parseDate(object.dateOfBirth),
       occupation: parseString(object.occupation, 'occupation'),
       ssn: parseString(object.ssn, 'ssn'),
+      entries: []
     };
-    return newEntry;
+    return newPatientEntry;
   }
 
   throw new Error('Incorrect data: some fields are missing');
