@@ -1,8 +1,4 @@
-export interface Diagnose {
-    code:   string;
-    name:   string;
-    latin?: string;
-}
+import { Diagnose } from "../types";
 
 const data: Diagnose[] = [
   {

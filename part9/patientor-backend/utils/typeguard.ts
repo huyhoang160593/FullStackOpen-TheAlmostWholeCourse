@@ -1,4 +1,4 @@
-import { Gender, NewPatientEntry } from '../data/patients';
+import { Gender, NewPatientEntry } from "../types";
 
 function isString(text: unknown): text is string {
   return typeof text === 'string' || text instanceof String;
