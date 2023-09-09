@@ -1,16 +1,26 @@
 import { Box, Typography } from '@mui/material';
-import { Patient } from '../../types';
+import { Diagnosis, Patient } from '../../types';
 import { Fragment, useEffect, useState } from 'react';
 import patientServices from '../../services/patients';
 import { useParams } from 'react-router-dom';
 import { PatientGender } from './PatientGender';
+import diagnosisServices from '../../services/diagnosis';
 
 interface Props {}
 export function PatientDetail(_props: Props) {
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [diagnosisCodeList, setDiagnosisCodeList] = useState<Diagnosis[]>([]);
   const [message, setMessage] = useState<string>('Loading...');
 
   let { patientId } = useParams();
+
+  useEffect(() => {
+    const getDiagnosisCodeList = () =>
+      diagnosisServices
+        .getAll()
+        .then((diagnosisList) => setDiagnosisCodeList(diagnosisList));
+    void getDiagnosisCodeList();
+  }, []);
   useEffect(() => {
     const fetchPatient = (id: string) =>
       patientServices
@@ -23,6 +33,7 @@ export function PatientDetail(_props: Props) {
     if (!patientId) return;
     void fetchPatient(patientId);
   }, [patientId]);
+
   if (!patient || !patientId) {
     return (
       <Typography variant="body1" component={'div'}>
@@ -51,7 +62,12 @@ export function PatientDetail(_props: Props) {
             {Boolean(entry.diagnosisCodes) &&
               entry.diagnosisCodes?.map((diagnosisCode) => (
                 <Box component={'li'} key={diagnosisCode}>
-                  {diagnosisCode}
+                  {diagnosisCode}&nbsp;
+                  {
+                    diagnosisCodeList.find(
+                      (diagnosis) => diagnosis.code === diagnosisCode
+                    )?.name
+                  }
                 </Box>
               ))}
           </Box>
