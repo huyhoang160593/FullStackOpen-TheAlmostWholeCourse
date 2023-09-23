@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { addPatient, getNonSSNPatients, getPatient } from "../services/patients";
-import { toNewPatientEntry } from "../utils/typeguard";
+import { addEntry, addPatient, getNonSSNPatients, getPatient } from "../services/patients";
+import { toNewEntry, toNewPatientEntry } from "../utils/typeguard";
 
 const patientsRouter = Router();
 
@@ -17,11 +17,26 @@ patientsRouter.get('/patients/:id', (req, res) => {
   return res.json(foundPatient);
 });
 
-patientsRouter.post('/patient', (req, res) => {
+patientsRouter.post('/patients', (req, res) => {
   try {
-    const newPatientEntry = toNewPatientEntry(req.body);
+    const newPatient = toNewPatientEntry(req.body);
 
-    const addedEntry = addPatient(newPatientEntry);
+    const addedPatient = addPatient(newPatient);
+    res.json(addedPatient);
+  } catch (error) {
+    let errorMessage = "Something went wrong.";
+    if (error instanceof Error) {
+      errorMessage += ' Error: ' + error.message;
+    }
+    res.status(400).send(errorMessage);
+  }
+});
+
+patientsRouter.post('/patients/:id/entries', (req, res) => {
+  try {
+    const patientId = req.params.id;
+    const newEntry = toNewEntry(req.body);
+    const addedEntry = addEntry(patientId, newEntry);
     res.json(addedEntry);
   } catch (error) {
     let errorMessage = "Something went wrong.";
