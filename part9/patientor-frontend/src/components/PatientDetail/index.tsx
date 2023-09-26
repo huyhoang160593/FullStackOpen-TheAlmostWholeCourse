@@ -1,20 +1,22 @@
-import { Box, Typography } from '@mui/material';
-import {
-  Diagnosis,
-  Patient,
-} from '../../types';
+import { Box, Button, Typography } from '@mui/material';
+import { Diagnosis, Patient } from '../../types';
 import { useEffect, useState } from 'react';
 import patientServices from '../../services/patients';
 import { useParams } from 'react-router-dom';
 import { PatientGender } from './PatientGender';
 import diagnosisServices from '../../services/diagnosis';
 import { EntryDetails } from './EntryDetails';
+import { NewEntryDialogForm } from './NewEntryDialogForm';
 
 interface Props {}
 export function PatientDetail(_props: Props) {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [diagnosisCodeList, setDiagnosisCodeList] = useState<Diagnosis[]>([]);
   const [message, setMessage] = useState<string>('Loading...');
+  const [isDisplayNewDialog, setIsDisplayNewDialog] = useState<boolean>(false);
+
+  const handleOpenDialog = () => setIsDisplayNewDialog(true);
+  const handleCloseDialog = () => setIsDisplayNewDialog(false);
 
   let { patientId } = useParams();
 
@@ -57,8 +59,25 @@ export function PatientDetail(_props: Props) {
         entries
       </Typography>
       {patient.entries.map((entry) => (
-        <EntryDetails key={entry.id} entry={entry} diagnosisCodeList={diagnosisCodeList} />
+        <EntryDetails
+          key={entry.id}
+          entry={entry}
+          diagnosisCodeList={diagnosisCodeList}
+        />
       ))}
+      <Button
+        sx={{ marginTop: '1em' }}
+        variant="contained"
+        onClick={handleOpenDialog}
+      >
+        ADD NEW ENTRY
+      </Button>
+      <NewEntryDialogForm
+        handleCloseDialog={handleCloseDialog}
+        isDisplayNewDialog={isDisplayNewDialog}
+        diagnosisCodeList={diagnosisCodeList}
+        setPatient={setPatient}
+      />
     </Box>
   );
 }

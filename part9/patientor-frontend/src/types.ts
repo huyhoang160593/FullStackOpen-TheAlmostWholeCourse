@@ -1,3 +1,8 @@
+import { EntryTypes } from "./constants";
+
+// Define special omit for unions
+export type UnionOmit<T, K extends string | number | symbol> = T extends unknown ? Omit<T, K> : never;
+
 export enum HealthCheckRating {
   "Healthy" = 0,
   "LowRisk" = 1,
@@ -65,3 +70,5 @@ export interface Patient {
 }
 
 export type PatientFormValues = Omit<Patient, "id" | "entries">;
+export type EntryTypesUnion = typeof EntryTypes[number]
+export type NewEntry = UnionOmit<Entry, 'id'>;
